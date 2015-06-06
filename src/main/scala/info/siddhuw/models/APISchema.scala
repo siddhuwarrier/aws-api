@@ -9,10 +9,10 @@ import org.squeryl.Schema
  */
 
 object APISchema extends Schema {
-  val users = table[User]
+  val twitterUsers = table[TwitterUser]("twitter_user")
 
-  on(users) {
+  on(twitterUsers) {
     u =>
-      declare(u.username is unique)
+      declare(u.screenName is unique)
   }
 }
