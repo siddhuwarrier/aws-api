@@ -1,11 +1,11 @@
 package info.siddhuw.services
 
 import info.siddhuw.models.TwitterUser
-import info.siddhuw.models.daos.{UserDaoComponent, UserDao}
+import info.siddhuw.models.daos.{ UserDaoComponent, UserDao }
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
 import org.scalatest.tags.Slow
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{ Matchers, FlatSpec }
 import org.scalatest.mock.MockitoSugar
 import org.scribe.model.OAuthRequest
 import org.scribe.oauth.OAuthService
@@ -13,7 +13,7 @@ import org.scribe.oauth.OAuthService
 import org.mockito.Mockito._
 import org.mockito.Matchers._
 
-import scala.concurrent.{ExecutionContext, Future, Await}
+import scala.concurrent.{ ExecutionContext, Future, Await }
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,8 +24,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 @Slow
 class TwitterLoginServiceSpec extends FlatSpec
-with Matchers
-with MockitoSugar {
+    with Matchers
+    with MockitoSugar {
 
   "The Twitter login service" should "return the authorised twitter user if the login is successful" in {
     val twitterUser = new TwitterUser("test-twitter-user")
@@ -120,7 +120,7 @@ with MockitoSugar {
     val mockTwitterCredRetrievalService = mock[CredentialRetrievalService]
 
     when(mockTwitterCredRetrievalService.getCredentials(any[OAuthRequest])(any[ExecutionContext]))
-      .thenReturn(Future( """"username":"${twitterUser.screenName}""""))
+      .thenReturn(Future(""""username":"${twitterUser.screenName}""""))
 
     mockTwitterCredRetrievalService
   }
@@ -130,11 +130,11 @@ with MockitoSugar {
     when(mockTwitterCredRetrievalService.getCredentials(any[OAuthRequest])(any[ExecutionContext]))
       .thenAnswer(new Answer[Future[String]] {
 
-      override def answer(invocationOnMock: InvocationOnMock): Future[String] = Future {
-        Thread.sleep(1200000) //sleep for 20 minutes; we should time out before then for sure
-        ""
-      }
-    })
+        override def answer(invocationOnMock: InvocationOnMock): Future[String] = Future {
+          Thread.sleep(1200000) //sleep for 20 minutes; we should time out before then for sure
+          ""
+        }
+      })
     mockTwitterCredRetrievalService
   }
 }

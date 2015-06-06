@@ -9,7 +9,6 @@ import scala.util.Try
  * @author Siddhu Warrier
  */
 
-
 /**
  * An OAuth Login Service that simplifies the process of:
  * (a) authenticating using a third-party OAuth service

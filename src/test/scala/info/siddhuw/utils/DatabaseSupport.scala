@@ -4,18 +4,17 @@ import com.typesafe.config.ConfigFactory
 import info.siddhuw.models.APISchema
 import org.scalatest.BeforeAndAfterAll
 import org.squeryl.adapters.H2Adapter
-import org.squeryl.{PrimitiveTypeMode, Session, SessionFactory}
+import org.squeryl.{ PrimitiveTypeMode, Session, SessionFactory }
 
 /**
  * @author Siddhu Warrier
  */
 
-
 trait DatabaseSupport extends PrimitiveTypeMode {
-  self: BeforeAndAfterAll =>
+  self: BeforeAndAfterAll ⇒
   val config = ConfigFactory.load("app")
 
-  SessionFactory.concreteFactory = Some(() =>
+  SessionFactory.concreteFactory = Some(() ⇒
     Session.create(java.sql.DriverManager.getConnection(config.getString("db.url")), new H2Adapter))
   val session = SessionFactory.newSession
 

@@ -12,7 +12,7 @@ object APISchema extends Schema {
   val twitterUsers = table[TwitterUser]("twitter_user")
 
   on(twitterUsers) {
-    u =>
+    u ⇒
       declare(u.screenName is unique)
   }
 }

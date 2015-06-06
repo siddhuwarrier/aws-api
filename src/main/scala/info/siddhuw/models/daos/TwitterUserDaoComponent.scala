@@ -8,9 +8,8 @@ import org.squeryl.PrimitiveTypeMode
  * @author Siddhu Warrier
  */
 
-
 trait TwitterUserDaoComponent extends UserDaoComponent[TwitterUser] {
-   override def userDao: UserDao[TwitterUser] = new TwitterUserDao()
+  override def userDao: UserDao[TwitterUser] = new TwitterUserDao()
 
   class TwitterUserDao extends UserDao[TwitterUser] with PrimitiveTypeMode {
     override def findById(screenName: String): Option[TwitterUser] = {

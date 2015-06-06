@@ -1,0 +1,11 @@
+{
+  "keys": [
+    {
+      "alg": "HS512",
+      "kty": "oct",
+      "use": "sig",
+      "k": "zAbRqMrldVD5V34OB4QZ0KvFkx3bRakI3stOWEueK-IrWZFJOdfB6m3qz1Rl80qDcytwUcNRhIoN2hIfwtX072DSpfv8D3r95mXE5N4hgl0qiimnANg5lgHjVL27lSj006foaY1Dc788eZEmgy0juWLwCMYL4ZmZ5pkmmYffSzH9P3ClQyM9Fb29NzN4PAiGkz96skfaoYPWrbusy2jaXKtK_FIjPK1ikY7kCjfyRvn_qyiUstPk5xtiKMoVTGFll53nSl3QCD638_sXuBhuic811yWMKV4hSBxqxsKmH9mHpeFhitK9osFBXNTmGNj9j8RzrTyK6KwliiqktqtOMA",
+      "kid": "aws-lockhart-api"
+    }
+  ]
+}

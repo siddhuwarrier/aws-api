@@ -2,19 +2,18 @@ package info.siddhuw.models.daos
 
 import info.siddhuw.builders.TwitterUserBuilder
 import info.siddhuw.utils.DatabaseSupport
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfter, Matchers, FlatSpec}
+import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfter, Matchers, FlatSpec }
 import info.siddhuw.models.APISchema._
 
 /**
  * @author Siddhu Warrier
  */
 
-
 class TwitterUserDaoFindIntegrationTest extends FlatSpec
-with Matchers
-with BeforeAndAfter
-with BeforeAndAfterAll
-with DatabaseSupport {
+    with Matchers
+    with BeforeAndAfter
+    with BeforeAndAfterAll
+    with DatabaseSupport {
   override protected def beforeAll(): Unit = {
     initDb()
   }
@@ -34,19 +33,19 @@ with DatabaseSupport {
 
   after {
     twitterUserObjs.map {
-      twitterUser =>
-      twitterUsers.deleteWhere(_.screenName === twitterUser.screenName)
+      twitterUser ⇒
+        twitterUsers.deleteWhere(_.screenName === twitterUser.screenName)
     }
   }
 
   "The Twitter User DAO" should "find an existing twitter user" in {
     twitterUserObjs.forall {
-      twitterUser =>
+      twitterUser ⇒
         twitterUserDao.findById(twitterUser.screenName).isDefined
-    } should equal (true)
+    } should equal(true)
   }
 
   it should "return None if the twitter user is not found" in {
-    twitterUserDao.findById(TwitterUserBuilder.build().screenName) should equal (None)
+    twitterUserDao.findById(TwitterUserBuilder.build().screenName) should equal(None)
   }
 }

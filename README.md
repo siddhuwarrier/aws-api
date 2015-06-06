@@ -1,3 +1,12 @@
+## Security
+
+Describe the security approach taken for the API, and use these links to explain your decisions:
+
+* https://auth0.com/blog/2014/01/07/angularjs-authentication-with-cookies-vs-token/
+* https://auth0.com/blog/2014/01/27/ten-things-you-should-know-about-tokens-and-cookies/
+* http://sitr.us/2011/08/26/cookies-are-bad-for-you.html
+
+I would also store the keypair more securely in a production deployment; usually with the Infrastructure as Code.
 ## Building the application locally
 
 To run just the unit tests, type `mvn test`.
@@ -8,16 +17,6 @@ To run the unit and integration tests (which are identified by their names endin
 
     mvn verify
 
-The integration tests use:
-* an embedded Redis server, and
-* an in-memory H2 database.
+The integration tests use an in-memory H2 database.
 
 ## Miscellaneous Notes
-
-### ESAPI
-
-The Enterprise Security API (ESAPI) from the Open Web Application Security Project (OWASP) provides several convenient
-abstractions for performing common cryptographic tasks, and its use was heavily encouraged by CWS's Security researchers.
-
-However, the way logging is designed is interesting to say the least. It expects the user to use log4j or java-logging, and
-as I use neither of these in the project, it logs its complaints on to `stdout`.

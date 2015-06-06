@@ -4,21 +4,19 @@ import javax.servlet.ServletContext
 
 import com.typesafe.config.ConfigFactory
 import info.siddhuw.controllers.OAuthUserController
-import info.siddhuw.models.APISchema
 import info.siddhuw.models.daos.TwitterUserDaoComponent
-import info.siddhuw.services.{TwitterCredentialRetrievalServiceComponent, TwitterLoginServiceComponent}
+import info.siddhuw.services.{ JWTTokenService, TwitterCredentialRetrievalServiceComponent, TwitterLoginServiceComponent }
 import org.scalatra.LifeCycle
 import org.scribe.builder.ServiceBuilder
 import org.scribe.builder.api.TwitterApi
 import org.scribe.oauth.OAuthService
-import org.squeryl.adapters.{PostgreSqlAdapter, H2Adapter}
-import org.squeryl.{PrimitiveTypeMode, Session, SessionFactory}
-
+import org.squeryl.adapters.PostgreSqlAdapter
+import org.squeryl.{ PrimitiveTypeMode, Session, SessionFactory }
 
 class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
   val conf = ConfigFactory.load("app")
 
-  SessionFactory.concreteFactory = Some(() => {
+  SessionFactory.concreteFactory = Some(() ⇒ {
     Session.create(
       java.sql.DriverManager.getConnection(
         conf.getString("db.url"),
@@ -28,14 +26,13 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
   })
   val session = SessionFactory.newSession
 
-
   override def destroy(context: ServletContext): Unit = {
     super.destroy(context)
-    shutdownDb
+    shutdownDb()
   }
 
   override def init(context: ServletContext) {
-    initDb
+    initDb()
 
     val loginService = new TwitterLoginServiceComponent with TwitterUserDaoComponent with TwitterCredentialRetrievalServiceComponent {
       override val oauthService: OAuthService = new ServiceBuilder()
@@ -45,14 +42,17 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
         .callback(conf.getString("twitter.callback"))
         .build()
     }.loginService
-    context.mount(new OAuthUserController(loginService), "/auth/*")
+    val twitterUserDao = new TwitterUserDaoComponent {}.userDao
+    val jwtTokenService = new JWTTokenService(twitterUserDao)
+
+    context.mount(new OAuthUserController(loginService, jwtTokenService), "/auth/*")
   }
 
-  private def initDb: Unit = {
+  private def initDb(): Unit = {
     session.bindToCurrentThread
   }
 
-  private def shutdownDb = {
+  private def shutdownDb(): Unit = {
     session.unbindFromCurrentThread
   }
 }

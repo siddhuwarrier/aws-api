@@ -4,12 +4,11 @@ import org.json4s.JsonAST.JString
 import org.json4s.jackson.JsonMethods._
 import org.scribe.model.OAuthRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 /**
  * @author Siddhu Warrier
  */
-
 
 trait TwitterCredentialRetrievalServiceComponent extends CredentialRetrievalServiceComponent {
   override def credentialRetrievalService = new TwitterCredentialRetrievalService
