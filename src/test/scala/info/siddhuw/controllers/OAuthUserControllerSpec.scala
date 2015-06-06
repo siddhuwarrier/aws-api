@@ -2,7 +2,9 @@ package info.siddhuw.controllers
 
 import com.google.common.net.HttpHeaders._
 import com.typesafe.config.ConfigFactory
+import info.siddhuw.builders.TwitterUserBuilder
 import info.siddhuw.models.TwitterUser
+import info.siddhuw.models.daos.UserDao
 import info.siddhuw.services.{ JWTTokenService, OAuthLoginService }
 import org.apache.http.HttpStatus._
 import org.mockito.Mockito._
@@ -16,6 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import com.google.common.net.HttpHeaders._
 import scala.util.{ Failure, Try }
 
 /**
@@ -24,18 +27,30 @@ import scala.util.{ Failure, Try }
  * @author Siddhu Warrier
  */
 
-class OAuthUserControllerCallbackSpec extends FlatSpec
+class OAuthUserControllerSpec extends FlatSpec
     with MockitoSugar
     with ScalatraSuite
     with Matchers {
   val config = ConfigFactory.load("app")
 
   val mockLoginService = mock[OAuthLoginService[TwitterUser]]
-  val mockTokenService = mock[JWTTokenService]
-  val oauthUserController = new OAuthUserController(mockLoginService, mockTokenService)
+  val twitterUser = TwitterUserBuilder.build()
+  val mockUserDao = mock[UserDao[TwitterUser]]
+  when(mockUserDao.findById(twitterUser.screenName)).thenReturn(Some(twitterUser))
+  val tokenService = new JWTTokenService(mockUserDao)
+  val oauthUserController = new OAuthUserController(mockLoginService, tokenService)
   addServlet(oauthUserController, "/auth/*")
 
-  //TODO investigate strange issue with happy path test that I don't receive any logs for. Works fine when run.
+  //TODO investigate strange issue with happy path tests that I don't receive any logs for. Works fine when run.
+
+  "The OAuth User Controller" should "redirect users with no JWT token through to the third-party auth provider" in {
+    val expectedRedirectUrl = "http://evilkanievel.com"
+    when(mockLoginService.redirectUrl).thenReturn(expectedRedirectUrl)
+    get("/auth") {
+      status should equal(SC_MOVED_TEMPORARILY)
+      header(LOCATION) should equal(expectedRedirectUrl)
+    }
+  }
 
   "The OAuth User Controller callback endpoint" should "respond with a 401 if the authorisation fails" in {
     val requestParams = Map(config.getString("oauth.token") -> "token",

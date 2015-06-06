@@ -1,19 +1,18 @@
 package info.siddhuw.controllers
 
-import java.util.concurrent.TimeoutException
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import javax.servlet.http.HttpServletRequest
 
 import com.google.common.net.HttpHeaders._
 import com.typesafe.config.ConfigFactory
 import info.siddhuw.models.TwitterUser
 import info.siddhuw.services.{ JWTTokenService, OAuthLoginService }
 import org.json4s.{ DefaultFormats, Formats }
-import org.scalatra.{ ServiceUnavailable, Ok, Unauthorized }
+import org.scalatra.{ Ok, ServiceUnavailable, Unauthorized }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import scala.util.{ Failure, Success }
+import scala.util.{ Try, Failure, Success }
 
 /**
  * @author Siddhu Warrier
@@ -25,7 +24,11 @@ class OAuthUserController(loginService: OAuthLoginService[TwitterUser],
   override protected implicit def jsonFormats: Formats = DefaultFormats
 
   get("/") {
-    redirect(loginService.redirectUrl)
+    if (isAuthorised) {
+      Ok()
+    } else {
+      redirect(loginService.redirectUrl)
+    }
   }
 
   get("/callback") {
@@ -46,7 +49,16 @@ class OAuthUserController(loginService: OAuthLoginService[TwitterUser],
     }
   }
 
-  private def authorise(implicit request: HttpServletRequest) = {
+  private def isAuthorised(implicit request: HttpServletRequest): Boolean = {
+    request.headers.get(AUTHORIZATION) match {
+      case Some(authorizationHeader) ⇒
+        tokenService.isValid(authorizationHeader.replaceAll("Bearer", "").trim)
+      case None ⇒
+        false
+    }
+  }
+
+  private def authorise(implicit request: HttpServletRequest): Try[TwitterUser] = {
     try {
       val authorised = Await.result(loginService.authoriseUser(params), appConfig.getLong("auth.wait_time_sec") seconds)
       authorised

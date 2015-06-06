@@ -4,6 +4,7 @@ import javax.servlet.ServletContext
 
 import com.typesafe.config.ConfigFactory
 import info.siddhuw.controllers.OAuthUserController
+import info.siddhuw.controllers.api.APIController
 import info.siddhuw.models.daos.TwitterUserDaoComponent
 import info.siddhuw.services.{ JWTTokenService, TwitterCredentialRetrievalServiceComponent, TwitterLoginServiceComponent }
 import org.scalatra.LifeCycle
@@ -42,10 +43,11 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
         .callback(conf.getString("twitter.callback"))
         .build()
     }.loginService
-    val twitterUserDao = new TwitterUserDaoComponent {}.userDao
-    val jwtTokenService = new JWTTokenService(twitterUserDao)
+    implicit val twitterUserDao = new TwitterUserDaoComponent {}.userDao
+    implicit val jwtTokenService = new JWTTokenService(twitterUserDao)
 
     context.mount(new OAuthUserController(loginService, jwtTokenService), "/auth/*")
+    context.mount(new APIController, "/api/*")
   }
 
   private def initDb(): Unit = {

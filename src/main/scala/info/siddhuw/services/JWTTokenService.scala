@@ -9,6 +9,7 @@ import com.nimbusds.jose.jwk._
 import com.nimbusds.jose.{ JWSAlgorithm, JWSHeader }
 import com.nimbusds.jwt.{ JWTClaimsSet, ReadOnlyJWTClaimsSet, SignedJWT }
 import com.typesafe.config.ConfigFactory
+import com.typesafe.scalalogging.LazyLogging
 import info.siddhuw.models.TwitterUser
 import info.siddhuw.models.daos.UserDao
 import org.joda.time.DateTime
@@ -18,11 +19,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, Future }
 import scala.language.postfixOps
+import scala.util.Try
 
 /**
  * @author Siddhu Warrier
  */
-class JWTTokenService(userDao: UserDao[TwitterUser]) {
+class JWTTokenService(userDao: UserDao[TwitterUser]) extends LazyLogging {
 
   val config = ConfigFactory.load("app")
 
@@ -35,9 +37,17 @@ class JWTTokenService(userDao: UserDao[TwitterUser]) {
   }
 
   def isValid(jwtTokenStr: String): Boolean = {
-    val jwsToken = SignedJWT.parse(jwtTokenStr)
-    jwsToken.verify(new MACVerifier(getSharedSecret)) && verifyClaims(jwsToken.getJWTClaimsSet)
+    try {
+      val jwsToken = SignedJWT.parse(jwtTokenStr)
+      jwsToken.verify(new MACVerifier(getSharedSecret)) && verifyClaims(jwsToken.getJWTClaimsSet)
+    } catch {
+      case t: Throwable ⇒
+        logger.error("Failed to check validity", t)
+        false
+    }
   }
+
+  def getScreenName(jwtTokenStr: String): Try[String] = Try(SignedJWT.parse(jwtTokenStr).getJWTClaimsSet.getSubject)
 
   private def verifyClaims(claimsSet: ReadOnlyJWTClaimsSet): Boolean = {
     val expiryDt = new DateTime(claimsSet.getExpirationTime, ISOChronology.getInstanceUTC)

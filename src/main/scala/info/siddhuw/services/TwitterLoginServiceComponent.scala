@@ -50,8 +50,8 @@ trait TwitterLoginServiceComponent extends OAuthLoginServiceComponent[TwitterUse
             val screenName = Await.result(credentialRetrievalService.getCredentials(twitterReq), webReqTimeout)
             doAuthorise(screenName)
           } catch {
-            case e: TimeoutException ⇒
-              Future(Failure(e))
+            case t: Throwable ⇒
+              Future(Failure(t))
           }
 
         case Failure(t) ⇒
