@@ -10,8 +10,8 @@ import com.nimbusds.jose.{ JWSAlgorithm, JWSHeader }
 import com.nimbusds.jwt.{ JWTClaimsSet, ReadOnlyJWTClaimsSet, SignedJWT }
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
-import info.siddhuw.models.TwitterUser
-import info.siddhuw.models.daos.UserDao
+import info.siddhuw.models.DBUser
+import info.siddhuw.models.daos.DBUserDAO
 import org.joda.time.DateTime
 import org.joda.time.chrono.ISOChronology
 
@@ -24,11 +24,11 @@ import scala.util.Try
 /**
  * @author Siddhu Warrier
  */
-class JWTTokenService(userDao: UserDao[TwitterUser]) extends LazyLogging {
+class JWTTokenService(userDao: DBUserDAO) extends LazyLogging {
 
   val config = ConfigFactory.load("app")
 
-  def create(user: TwitterUser) = {
+  def create(user: DBUser) = {
     val claimsSet = createClaimsSet(user)
 
     val signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.HS512), claimsSet)
@@ -47,7 +47,7 @@ class JWTTokenService(userDao: UserDao[TwitterUser]) extends LazyLogging {
     }
   }
 
-  def getScreenName(jwtTokenStr: String): Try[String] = Try(SignedJWT.parse(jwtTokenStr).getJWTClaimsSet.getSubject)
+  def getUsername(jwtTokenStr: String): Try[String] = Try(SignedJWT.parse(jwtTokenStr).getJWTClaimsSet.getSubject)
 
   private def verifyClaims(claimsSet: ReadOnlyJWTClaimsSet): Boolean = {
     val expiryDt = new DateTime(claimsSet.getExpirationTime, ISOChronology.getInstanceUTC)
@@ -88,10 +88,10 @@ class JWTTokenService(userDao: UserDao[TwitterUser]) extends LazyLogging {
     octetSeqKey.toByteArray
   }
 
-  private def createClaimsSet(user: TwitterUser): JWTClaimsSet = {
+  private def createClaimsSet(user: DBUser): JWTClaimsSet = {
     val claimsSet = new JWTClaimsSet()
 
-    claimsSet.setSubject(user.screenName)
+    claimsSet.setSubject(user.username)
     claimsSet.setIssuer(config.getString("auth.jwt.issuer"))
     claimsSet.setExpirationTime(getExpirationTime)
 

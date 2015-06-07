@@ -5,14 +5,12 @@ import org.squeryl.Schema
 
 /**
  * @author Siddhu Warrier
- * @date 05/06/15.
  */
 
 object APISchema extends Schema {
-  val twitterUsers = table[TwitterUser]("twitter_user")
-
-  on(twitterUsers) {
+  val dbUsers = table[DBUser]("db_user")
+  on(dbUsers) {
     u ⇒
-      declare(u.screenName is unique)
+      declare(u.username is unique)
   }
 }

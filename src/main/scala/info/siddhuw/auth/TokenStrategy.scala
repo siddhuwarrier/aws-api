@@ -1,27 +1,31 @@
 package info.siddhuw.auth
 
-import javax.servlet.http.{ HttpServletResponse, HttpServletRequest }
+import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
 
-import info.siddhuw.models.TwitterUser
-import info.siddhuw.models.daos.UserDao
+import com.google.common.net.HttpHeaders._
+import info.siddhuw.models.DBUser
+import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.JWTTokenService
 import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
-import com.google.common.net.HttpHeaders._
 
 /**
  * @author Siddhu Warrier
  */
-class TokenStrategy(protected val app: ScalatraBase, val userDao: UserDao[TwitterUser]) extends ScentryStrategy[String] {
+class TokenStrategy(protected val app: ScalatraBase, val userDao: DBUserDAO) extends ScentryStrategy[DBUser] {
   val tokenService = new JWTTokenService(userDao)
 
   override def name = TokenStrategy.Name
 
-  override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse): Option[String] = {
+  override def isValid(implicit request: HttpServletRequest) = {
+    Option(app.request.getHeader(AUTHORIZATION)).flatMap(Some(_)).isDefined
+  }
+
+  override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse): Option[DBUser] = {
     val jwtTokenOpt = getToken
     if (isValidToken(jwtTokenOpt)) {
-      //do not need to check for success or failure here as I know the token is valid when this method is invoked.
-      Some(tokenService.getScreenName(jwtTokenOpt.get).get)
+      //TODO make async
+      userDao.findById(tokenService.getUsername(jwtTokenOpt.get).get)
     } else {
       None
     }
@@ -35,6 +39,7 @@ class TokenStrategy(protected val app: ScalatraBase, val userDao: UserDao[Twitte
         None
     }
   }
+
   private def isValidToken(authorizationHeaderOpt: Option[String]): Boolean = {
     authorizationHeaderOpt match {
       case None ⇒
@@ -43,6 +48,7 @@ class TokenStrategy(protected val app: ScalatraBase, val userDao: UserDao[Twitte
         tokenService.isValid(headerVal)
     }
   }
+
 }
 
 object TokenStrategy {

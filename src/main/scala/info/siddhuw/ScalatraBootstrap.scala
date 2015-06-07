@@ -3,14 +3,11 @@ package info.siddhuw
 import javax.servlet.ServletContext
 
 import com.typesafe.config.ConfigFactory
-import info.siddhuw.controllers.OAuthUserController
+import info.siddhuw.controllers.AuthUserController
 import info.siddhuw.controllers.api.APIController
-import info.siddhuw.models.daos.TwitterUserDaoComponent
-import info.siddhuw.services.{ JWTTokenService, TwitterCredentialRetrievalServiceComponent, TwitterLoginServiceComponent }
+import info.siddhuw.models.daos.DBUserDAO
+import info.siddhuw.services.JWTTokenService
 import org.scalatra.LifeCycle
-import org.scribe.builder.ServiceBuilder
-import org.scribe.builder.api.TwitterApi
-import org.scribe.oauth.OAuthService
 import org.squeryl.adapters.PostgreSqlAdapter
 import org.squeryl.{ PrimitiveTypeMode, Session, SessionFactory }
 
@@ -35,18 +32,10 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
   override def init(context: ServletContext) {
     initDb()
 
-    val loginService = new TwitterLoginServiceComponent with TwitterUserDaoComponent with TwitterCredentialRetrievalServiceComponent {
-      override val oauthService: OAuthService = new ServiceBuilder()
-        .provider(classOf[TwitterApi])
-        .apiKey(conf.getString("twitter.apikey"))
-        .apiSecret(conf.getString("twitter.apisecret"))
-        .callback(conf.getString("twitter.callback"))
-        .build()
-    }.loginService
-    implicit val twitterUserDao = new TwitterUserDaoComponent {}.userDao
-    implicit val jwtTokenService = new JWTTokenService(twitterUserDao)
+    implicit val dbUserDao = new DBUserDAO
+    implicit val jwtTokenService = new JWTTokenService(dbUserDao)
 
-    context.mount(new OAuthUserController(loginService, jwtTokenService), "/auth/*")
+    context.mount(new AuthUserController, "/auth/*")
     context.mount(new APIController, "/api/*")
   }
 
