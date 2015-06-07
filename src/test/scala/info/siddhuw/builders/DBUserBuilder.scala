@@ -9,7 +9,8 @@ import info.siddhuw.models.DBUser
  */
 
 object DBUserBuilder {
-  def build(username: String = UUID.randomUUID.toString): DBUser = {
-    DBUser(username, UUID.randomUUID.toString, UUID.randomUUID.toString)
+  def build(username: String = "kim.young.well", pwHash: String = UUID.randomUUID.toString,
+    salt: String = UUID.randomUUID.toString): DBUser = {
+    DBUser(username, pwHash, salt)
   }
 }

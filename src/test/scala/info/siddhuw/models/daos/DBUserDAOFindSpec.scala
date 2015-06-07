@@ -23,7 +23,7 @@ class DBUserDAOFindSpec extends FlatSpec
   }
 
   private val userDAO = new DBUserDAO
-  private val userObjs = List.fill(10)(DBUserBuilder.build())
+  private val userObjs = for (i ← 1 to 10) yield DBUserBuilder.build(username = s"Kim the ${i}th")
 
   before {
     userObjs.map {

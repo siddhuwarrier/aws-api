@@ -10,7 +10,6 @@ import org.squeryl.PrimitiveTypeMode
  */
 
 trait JsonController extends ScalatraServlet
-    with LazyLogging
     with PrimitiveTypeMode
     with JacksonJsonSupport {
 }

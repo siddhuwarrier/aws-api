@@ -20,7 +20,6 @@ trait DatabaseSupport extends PrimitiveTypeMode {
 
   protected def initDb(): Unit = {
     session.bindToCurrentThread
-    APISchema.printDdl
     APISchema.create
   }
 
