@@ -9,7 +9,7 @@ import org.json4s.{ DefaultFormats, Formats }
 import org.scalatra.{ CorsSupport, Unauthorized }
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 /**
  * @author Siddhu Warrier
@@ -33,13 +33,13 @@ class AuthUserController(implicit val userDao: DBUserDAO) extends JsonController
     authenticate() match {
       case Some(dbUser) ⇒
 
-        logger.info(appendEntries(logData + ("Action" -> "Generate Token")), "Start")
+        logger.info(appendEntries((logData + ("Action" -> "Generate Token")).asJava), "Start")
         val token = tokenService.create(dbUser)
-        logger.info(appendEntries(logData + ("Action" -> "Generate Token")), "Done")
+        logger.info(appendEntries((logData + ("Action" -> "Generate Token")).asJava), "Done")
 
         "token" -> token
       case None ⇒
-        logger.error(appendEntries(logData), s"Failed: $UnauthorizedMsg")
+        logger.error(appendEntries(logData.asJava), s"Failed: $UnauthorizedMsg")
         halt(Unauthorized("msg" -> UnauthorizedMsg))
     }
   }

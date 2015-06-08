@@ -8,7 +8,7 @@ import net.logstash.logback.marker.Markers._
 import org.scalatra.Unauthorized
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 
 /**
  * @author Siddhu Warrier
@@ -21,13 +21,13 @@ class AWSController(implicit val awsService: AWSService, implicit val userDao: D
     val logData = Map("endpoint" -> "GET /regions")
     authenticate() match {
       case Some(_) ⇒
-        logger.info(appendEntries(logData + ("Action" -> "Retrieve regions")), "Start")
+        logger.info(appendEntries((logData + ("Action" -> "Retrieve regions")).asJava), "Start")
         val regions = awsService.regions()
-        logger.info(appendEntries(logData + ("Action" -> "Retrieve regions")), "Done")
+        logger.info(appendEntries((logData + ("Action" -> "Retrieve regions")).asJava), "Done")
 
         regions
       case None ⇒
-        logger.error(appendEntries(logData), s"Failed: $UnauthorizedMsg")
+        logger.error(appendEntries(logData.asJava), s"Failed: $UnauthorizedMsg")
         halt(Unauthorized("msg" -> UnauthorizedMsg))
     }
   }

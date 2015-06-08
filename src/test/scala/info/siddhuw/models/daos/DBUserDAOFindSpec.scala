@@ -3,13 +3,15 @@ package info.siddhuw.models.daos
 import info.siddhuw.models.APISchema._
 import info.siddhuw.utils.DatabaseSupport
 import info.siddhuw.utils.builders.DBUserBuilder
-import org.scalatest.{ BeforeAndAfter, BeforeAndAfterAll, FlatSpec, Matchers }
+import org.scalatest.{ BeforeAndAfter, BeforeAndAfterAll }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * @author Siddhu Warrier
  */
 
-class DBUserDAOFindSpec extends FlatSpec
+class DBUserDAOFindSpec extends AnyFlatSpec
     with Matchers
     with BeforeAndAfter
     with BeforeAndAfterAll

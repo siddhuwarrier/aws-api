@@ -3,14 +3,15 @@ package info.siddhuw.models
 import com.amazonaws.services.ec2.model.{ Instance, InstanceState, Placement }
 import info.siddhuw.utils.builders.EC2InstanceBuilder
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
 /**
  * @author Siddhu Warrier
  */
 
-class EC2InstanceFactorySpec extends FlatSpec
+class EC2InstanceFactorySpec extends AnyFlatSpec
     with Matchers
     with MockitoSugar {
   "The EC2 instance factory" should "build an EC2 Instance from an AWS instance result" in {

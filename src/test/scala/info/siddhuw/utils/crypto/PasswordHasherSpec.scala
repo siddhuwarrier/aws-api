@@ -1,13 +1,14 @@
 package info.siddhuw.utils.crypto
 
 import org.owasp.esapi.reference.crypto.JavaEncryptor
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * @author Siddhu Warrier
  */
 
-class PasswordHasherSpec extends FlatSpec with Matchers {
+class PasswordHasherSpec extends AnyFlatSpec with Matchers {
   val password = "stupid-password"
 
   "The password hash" should "be validatable" in {

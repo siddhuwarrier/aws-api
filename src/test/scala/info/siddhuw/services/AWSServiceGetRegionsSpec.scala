@@ -2,13 +2,14 @@ package info.siddhuw.services
 
 import com.amazonaws.regions.Regions
 import info.siddhuw.models.AWSRegion
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 /**
  * @author Siddhu Warrier
  */
 
-class AWSServiceGetRegionsSpec extends FlatSpec with Matchers {
+class AWSServiceGetRegionsSpec extends AnyFlatSpec with Matchers {
   "The Get Regions method in the AWS Service" should "return the full list of regions" in {
     val regions = new AWSService().regions(excludeChina = false, excludeGov = false)
     regions should equal(Regions.values().map(r ⇒ AWSRegion(r.getName)))

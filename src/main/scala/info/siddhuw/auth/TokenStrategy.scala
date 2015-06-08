@@ -12,7 +12,7 @@ import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.language.postfixOps
@@ -34,7 +34,7 @@ class TokenStrategy(protected val app: ScalatraBase, val userDao: DBUserDAO)(imp
 
   override def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse): Option[DBUser] = {
     val logData = Map("action" -> "authenticate")
-    logger.info(appendEntries(logData), "Start")
+    logger.info(appendEntries(logData.asJava), "Start")
 
     val jwtTokenOpt = getToken
     if (isValidToken(jwtTokenOpt)) {
@@ -42,14 +42,14 @@ class TokenStrategy(protected val app: ScalatraBase, val userDao: DBUserDAO)(imp
 
       Try(Await.result(Future(userDao.findById(usernameInToken)), config.getLong("db.wait_time_sec") seconds)) match {
         case Success(user) ⇒
-          logger.info(appendEntries(logData), "Done")
+          logger.info(appendEntries(logData.asJava), "Done")
           user
         case Failure(e) ⇒
-          logger.error(appendEntries(logData), "Failed", e)
+          logger.error(appendEntries(logData.asJava), "Failed", e)
           None
       }
     } else {
-      logger.error(appendEntries(logData), "Failed: Invalid JWT token")
+      logger.error(appendEntries(logData.asJava), "Failed: Invalid JWT token")
       None
     }
   }

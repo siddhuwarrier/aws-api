@@ -7,10 +7,9 @@ import com.amazonaws.services.ec2.model.{ DescribeInstancesRequest, DescribeInst
 import com.typesafe.config.ConfigFactory
 import info.siddhuw.models.EC2Instance
 
-import scala.collection.JavaConversions._
-import scala.concurrent.{ExecutionContext, Future, Await}
-import scala.util.{Failure, Success, Try}
-
+import scala.jdk.CollectionConverters._
+import scala.concurrent.{ Await, ExecutionContext, Future }
+import scala.util.{ Failure, Success, Try }
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
@@ -32,23 +31,22 @@ class AWSEC2Service(val ec2: AmazonEC2)(implicit ec: ExecutionContext) {
     val filter = new Filter()
     val instanceResult = describeInstances(region, activeOnly)
 
-    instanceResult.getReservations.flatMap {
+    instanceResult.getReservations.asScala.flatMap {
       listInReservation
     }.toList
   }
 
   private def listInReservation(reservation: Reservation): List[EC2Instance] = {
-    reservation.getInstances.map {
+    reservation.getInstances.asScala.map {
       EC2Instance.apply
     }.toList
   }
 
   private def describeInstances(regionName: String, activeOnly: Boolean): DescribeInstancesResult = {
-    val filters = activeOnly match {
-      case true ⇒
-        createActiveFilter()
-      case false ⇒
-        Array[Filter]()
+    val filters = if (activeOnly) {
+      createActiveFilter()
+    } else {
+      Array[Filter]()
     }
     val region = Region.getRegion(Regions.fromName(regionName))
     ec2.setRegion(region)
@@ -56,14 +54,14 @@ class AWSEC2Service(val ec2: AmazonEC2)(implicit ec: ExecutionContext) {
     val awsTimeout = config.getLong("aws.wait_time_sec") seconds
 
     Try(Await.result(Future(ec2.describeInstances(new DescribeInstancesRequest().withFilters(filters: _*))), awsTimeout)) match {
-      case Success(result) =>
+      case Success(result) ⇒
         result
-      case Failure(e) =>
+      case Failure(e) ⇒
         throw new AmazonClientException(e)
     }
   }
 
   private def createActiveFilter(): Array[Filter] = {
-    Array(new Filter("instance-state-name", List("running", "stopped")))
+    Array(new Filter("instance-state-name", List("running", "stopped").asJava))
   }
 }

@@ -1,7 +1,11 @@
 package info.siddhuw.services
 
 import com.amazonaws.AmazonClientException
+<<<<<<< HEAD
 import com.amazonaws.regions.{Region, Regions}
+=======
+import com.amazonaws.regions.{ Region, Regions }
+>>>>>>> 6490aae... - Make AWS operations asynchronous
 import com.amazonaws.services.ec2.AmazonEC2
 import com.amazonaws.services.ec2.model._
 import com.typesafe.config.ConfigFactory
@@ -11,10 +15,11 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
-import scala.collection.JavaConversions._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -23,13 +28,13 @@ import scala.language.postfixOps
  * @author Siddhu Warrier
  */
 
-class AWSEC2ServiceSpec extends FlatSpec
+class AWSEC2ServiceSpec extends AnyFlatSpec
     with MockitoSugar
     with Matchers {
   "The AWS EC2 Browser Service list instances method" should "retrieve the list of active instances for a specified region" in {
     val expected = List.fill(10)(EC2InstanceBuilder.build)
     val expectedRequestWithFilters = new DescribeInstancesRequest()
-      .withFilters(new Filter("instance-state-name", List("running", "stopped")))
+      .withFilters(new Filter("instance-state-name", List("running", "stopped").asJava))
     val mockEC2 = mock[AmazonEC2]
     val mockDescribeInstancesResult = buildMockResult(expected)
     when(mockEC2.describeInstances(expectedRequestWithFilters)).thenReturn(mockDescribeInstancesResult)
@@ -96,7 +101,7 @@ class AWSEC2ServiceSpec extends FlatSpec
   private def buildMockResult(expectedInstances: List[EC2Instance]): DescribeInstancesResult = {
     val mockDescribeInstancesResult = mock[DescribeInstancesResult]
     val mockReservation = mock[Reservation]
-    when(mockDescribeInstancesResult.getReservations).thenReturn(List(mockReservation))
+    when(mockDescribeInstancesResult.getReservations).thenReturn(List(mockReservation).asJava)
 
     val mockInstances = expectedInstances.map {
       expected ⇒
@@ -115,7 +120,7 @@ class AWSEC2ServiceSpec extends FlatSpec
         mockInstance
     }
 
-    when(mockReservation.getInstances).thenReturn(mockInstances)
+    when(mockReservation.getInstances).thenReturn(mockInstances.asJava)
     mockDescribeInstancesResult
   }
 }

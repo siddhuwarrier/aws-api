@@ -12,13 +12,15 @@ import org.apache.commons.httpclient.HttpStatus._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.{ DefaultFormats, Formats }
 import org.scalatest._
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.matchers.should.Matchers
 import org.scalatra.test.scalatest.ScalatraSuite
 
 /**
  * @author Siddhu Warrier
  */
 
-class AWSControllerRegionSpec extends FeatureSpec
+class AWSControllerRegionSpec extends AnyFeatureSpec
     with GivenWhenThen
     with BeforeAndAfterAll
     with DatabaseSupport

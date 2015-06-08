@@ -1,13 +1,13 @@
 package info.siddhuw.controllers.api.aws.ec2
 
-import com.amazonaws.{ AmazonServiceException, AmazonClientException }
+import com.amazonaws.{ AmazonClientException, AmazonServiceException }
 import com.amazonaws.regions.Regions
 import com.google.common.base.CharMatcher
 import com.google.common.net.HttpHeaders._
 import info.siddhuw.models.APISchema._
-import info.siddhuw.models.{ EC2Instance, DBUser }
+import info.siddhuw.models.{ DBUser, EC2Instance }
 import info.siddhuw.models.daos.DBUserDAO
-import info.siddhuw.services.{ JWTTokenService, AWSEC2Service }
+import info.siddhuw.services.{ AWSEC2Service, JWTTokenService }
 import info.siddhuw.utils.DatabaseSupport
 import info.siddhuw.utils.builders.EC2InstanceBuilder
 import info.siddhuw.utils.crypto.PasswordHasher
@@ -15,16 +15,18 @@ import org.json4s.jackson.JsonMethods._
 import org.json4s.{ DefaultFormats, Formats }
 import org.mockito.Mockito
 import org.scalatest._
-import org.scalatest.mock.MockitoSugar
 import org.scalatra.test.scalatest.ScalatraSuite
 import org.apache.commons.httpclient.HttpStatus._
 import info.siddhuw.controllers.api.aws._
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
 /**
  * @author Siddhu Warrier
  */
 
-class AWSEC2ListInstancesControllerSpec extends FeatureSpec
+class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
     with GivenWhenThen
     with BeforeAndAfterAll
     with DatabaseSupport
