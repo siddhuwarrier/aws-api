@@ -1,11 +1,11 @@
 package info.siddhuw.auth
 
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import com.typesafe.config.ConfigFactory
-import info.siddhuw.crypto.PasswordHasher
 import info.siddhuw.models.DBUser
 import info.siddhuw.models.daos.DBUserDAO
+import info.siddhuw.utils.crypto.PasswordHasher
 import net.logstash.logback.marker.Markers._
 import org.scalatra.ScalatraBase
 import org.scalatra.auth.ScentryStrategy
@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConversions._
 import scala.concurrent.duration._
-import scala.concurrent.{ Await, ExecutionContext, Future }
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.language.postfixOps
-import scala.util.{ Success, Failure, Try }
+import scala.util.{Failure, Success, Try}
 
 /**
  * @author Siddhu Warrier

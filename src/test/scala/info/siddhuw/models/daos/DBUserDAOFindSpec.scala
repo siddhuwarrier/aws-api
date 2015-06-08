@@ -1,9 +1,9 @@
 package info.siddhuw.models.daos
 
-import info.siddhuw.builders.DBUserBuilder
-import info.siddhuw.utils.DatabaseSupport
-import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfter, Matchers, FlatSpec }
 import info.siddhuw.models.APISchema._
+import info.siddhuw.utils.DatabaseSupport
+import info.siddhuw.utils.builders.DBUserBuilder
+import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FlatSpec, Matchers}
 
 /**
  * @author Siddhu Warrier

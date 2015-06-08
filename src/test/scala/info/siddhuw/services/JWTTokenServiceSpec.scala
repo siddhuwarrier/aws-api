@@ -1,14 +1,14 @@
 package info.siddhuw.services
 
-import info.siddhuw.builders.DBUserBuilder
 import info.siddhuw.models.DBUser
 import info.siddhuw.models.daos.DBUserDAO
+import info.siddhuw.utils.builders.DBUserBuilder
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
 import org.scalatest.mock.MockitoSugar
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
  * @author Siddhu Warrier

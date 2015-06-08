@@ -1,6 +1,5 @@
 package info.siddhuw.controllers
 
-import com.typesafe.scalalogging.LazyLogging
 import org.scalatra.ScalatraServlet
 import org.scalatra.json.JacksonJsonSupport
 import org.squeryl.PrimitiveTypeMode

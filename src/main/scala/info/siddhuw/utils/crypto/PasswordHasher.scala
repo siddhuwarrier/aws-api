@@ -1,4 +1,4 @@
-package info.siddhuw.crypto
+package info.siddhuw.utils.crypto
 
 import java.security.SecureRandom
 

@@ -3,7 +3,7 @@ package info.siddhuw.auth
 import info.siddhuw.models.DBUser
 import info.siddhuw.models.daos.DBUserDAO
 import org.scalatra.ScalatraBase
-import org.scalatra.auth.{ ScentryConfig, ScentrySupport }
+import org.scalatra.auth.{ScentryConfig, ScentrySupport}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

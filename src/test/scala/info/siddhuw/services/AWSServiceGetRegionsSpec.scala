@@ -2,7 +2,7 @@ package info.siddhuw.services
 
 import com.amazonaws.regions.Regions
 import info.siddhuw.models.AWSRegion
-import org.scalatest.{ Matchers, FlatSpec }
+import org.scalatest.{FlatSpec, Matchers}
 
 /**
  * @author Siddhu Warrier

@@ -1,6 +1,6 @@
 package info.siddhuw.models
 
-import com.amazonaws.services.ec2.model.{ Instance ⇒ AWSInstanceModel }
+import com.amazonaws.services.ec2.model.{Instance => AWSInstanceModel}
 
 /**
  * @author Siddhu Warrier

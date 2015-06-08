@@ -1,23 +1,23 @@
 package info.siddhuw.auth
 
-import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import com.google.common.net.HttpHeaders._
 import com.typesafe.config.ConfigFactory
-import info.siddhuw.builders.DBUserBuilder
 import info.siddhuw.controllers.AuthUserController
 import info.siddhuw.models.DBUser
 import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.JWTTokenService
+import info.siddhuw.utils.builders.DBUserBuilder
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
 import org.scalatest.mock.MockitoSugar
-import org.scalatest.{ FlatSpec, Matchers }
-import scala.concurrent.duration._
-import scala.language.postfixOps
+import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /**
  * @author Siddhu Warrier

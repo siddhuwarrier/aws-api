@@ -1,4 +1,4 @@
-package info.siddhuw.builders
+package info.siddhuw.utils.builders
 
 import java.util.UUID
 
