@@ -90,9 +90,15 @@ to the PostGres database using `heroku pg:psql` and execute the DDL statements s
 
 You will also need to use Heroku config vars for each of the settings in app.conf that you wish to override. `app.conf` has
 the environment variables corresponding to each of those settings.
+
+## Note on Logging
+
+All logs are written in the `logstash` format. This would potentially allow for it to be fed into ElasticSearch and viewed
+on Kibana.
     
-## Future Work
+## Future Work/Improvements
 
 * Migration scripts for DB schema changes.
 * API documentation using Swagger.
 * Move hmac_key out of source control into configuration management.
+* The OWSAP Enterprise Seucrity API requires all logging go through log4j. Either switch to log4j or replace ESAPI.
