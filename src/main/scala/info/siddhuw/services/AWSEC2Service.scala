@@ -1,17 +1,25 @@
 package info.siddhuw.services
 
+import com.amazonaws.AmazonClientException
 import com.amazonaws.regions.{ Region, Regions }
 import com.amazonaws.services.ec2.AmazonEC2
 import com.amazonaws.services.ec2.model.{ DescribeInstancesRequest, DescribeInstancesResult, Filter, Reservation }
+import com.typesafe.config.ConfigFactory
 import info.siddhuw.models.EC2Instance
 
 import scala.collection.JavaConversions._
+import scala.concurrent.{ExecutionContext, Future, Await}
+import scala.util.{Failure, Success, Try}
+
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /**
  * @author Siddhu Warrier
  */
 
-class AWSEC2Service(val ec2: AmazonEC2) {
+class AWSEC2Service(val ec2: AmazonEC2)(implicit ec: ExecutionContext) {
+  val config = ConfigFactory.load("app")
 
   /**
    * List Amazon EC2 instances
@@ -45,7 +53,14 @@ class AWSEC2Service(val ec2: AmazonEC2) {
     val region = Region.getRegion(Regions.fromName(regionName))
     ec2.setRegion(region)
 
-    ec2.describeInstances(new DescribeInstancesRequest().withFilters(filters: _*))
+    val awsTimeout = config.getLong("aws.wait_time_sec") seconds
+
+    Try(Await.result(Future(ec2.describeInstances(new DescribeInstancesRequest().withFilters(filters: _*))), awsTimeout)) match {
+      case Success(result) =>
+        result
+      case Failure(e) =>
+        throw new AmazonClientException(e)
+    }
   }
 
   private def createActiveFilter(): Array[Filter] = {

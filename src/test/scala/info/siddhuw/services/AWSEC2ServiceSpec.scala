@@ -1,19 +1,23 @@
 package info.siddhuw.services
 
 import com.amazonaws.AmazonClientException
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.regions.{ Region, Regions }
-import com.amazonaws.services.ec2.{ AmazonEC2Client, AmazonEC2 }
+import com.amazonaws.regions.{Region, Regions}
+import com.amazonaws.services.ec2.AmazonEC2
 import com.amazonaws.services.ec2.model._
 import com.typesafe.config.ConfigFactory
 import info.siddhuw.models.EC2Instance
 import info.siddhuw.utils.builders.EC2InstanceBuilder
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import org.mockito.invocation.InvocationOnMock
+import org.mockito.stubbing.Answer
 import org.scalatest.mock.MockitoSugar
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 import scala.collection.JavaConversions._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /**
  * @author Siddhu Warrier
@@ -71,6 +75,22 @@ class AWSEC2ServiceSpec extends FlatSpec
     val awsEC2Service = new AWSEC2Service(mockEC2)
 
     an[AmazonClientException] should be thrownBy awsEC2Service.list(Regions.US_EAST_1.getName)
+  }
+
+  it should "fail if querying EC2 times out" in {
+    val result = buildMockResult(List(EC2InstanceBuilder.build))
+    val mockEC2 = mock[AmazonEC2]
+    val conf = ConfigFactory.load("app")
+
+    when(mockEC2.describeInstances(any[DescribeInstancesRequest])).thenAnswer(new Answer[DescribeInstancesResult] {
+      override def answer(invocationOnMock: InvocationOnMock): DescribeInstancesResult = {
+        Thread.sleep((conf.getLong("aws.wait_time_sec") + 1 seconds).toMillis)
+        result
+      }
+    })
+
+    val awsEC2Service = new AWSEC2Service(mockEC2)
+    an [AmazonClientException] should be thrownBy awsEC2Service.list(Regions.US_EAST_1.getName)
   }
 
   private def buildMockResult(expectedInstances: List[EC2Instance]): DescribeInstancesResult = {

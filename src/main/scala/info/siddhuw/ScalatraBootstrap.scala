@@ -13,6 +13,7 @@ import info.siddhuw.services.{ AWSEC2Service, AWSService, JWTTokenService }
 import org.scalatra.LifeCycle
 import org.squeryl.adapters.PostgreSqlAdapter
 import org.squeryl.{ PrimitiveTypeMode, Session, SessionFactory }
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
   val conf = ConfigFactory.load("app")
