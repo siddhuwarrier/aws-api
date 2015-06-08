@@ -325,7 +325,7 @@
                 <artifactId>heroku-maven-plugin</artifactId>
                 <version>${heroku-plugin.version}</version>
                 <configuration>
-                    <appName>aws-api-dev</appName>
+                    <appName>aws-api</appName>
                     <processTypes>
                         <web>java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war</web>
                     </processTypes>
