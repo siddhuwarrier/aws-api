@@ -4,7 +4,7 @@ import com.typesafe.config.ConfigFactory
 import info.siddhuw.models.APISchema
 import org.scalatest.BeforeAndAfterAll
 import org.squeryl.adapters.H2Adapter
-import org.squeryl.{PrimitiveTypeMode, Session, SessionFactory}
+import org.squeryl.{ PrimitiveTypeMode, Session, SessionFactory }
 
 /**
  * @author Siddhu Warrier

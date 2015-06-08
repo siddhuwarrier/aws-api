@@ -1,10 +1,10 @@
 package info.siddhuw.models
 
-import com.amazonaws.services.ec2.model.{Instance, InstanceState, Placement}
+import com.amazonaws.services.ec2.model.{ Instance, InstanceState, Placement }
 import info.siddhuw.utils.builders.EC2InstanceBuilder
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 /**
  * @author Siddhu Warrier

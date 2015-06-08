@@ -1,8 +1,8 @@
 package info.siddhuw.services
 
-import com.amazonaws.regions.{Region, Regions}
+import com.amazonaws.regions.{ Region, Regions }
 import com.amazonaws.services.ec2.AmazonEC2
-import com.amazonaws.services.ec2.model.{DescribeInstancesRequest, DescribeInstancesResult, Filter, Reservation}
+import com.amazonaws.services.ec2.model.{ DescribeInstancesRequest, DescribeInstancesResult, Filter, Reservation }
 import info.siddhuw.models.EC2Instance
 
 import scala.collection.JavaConversions._

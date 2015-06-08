@@ -7,11 +7,11 @@ import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.JWTTokenService
 import info.siddhuw.utils.builders.DBUserBuilder
 import info.siddhuw.utils.crypto.PasswordHasher
-import info.siddhuw.utils.{DatabaseSupport, JsonScalatraSuite}
+import info.siddhuw.utils.{ DatabaseSupport, JsonScalatraSuite }
 import org.apache.commons.httpclient.HttpStatus._
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
-import org.json4s.{DefaultFormats, _}
+import org.json4s.{ DefaultFormats, _ }
 import org.scalatest._
 import org.scalatest.mock.MockitoSugar
 

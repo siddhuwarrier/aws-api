@@ -9,10 +9,10 @@ import info.siddhuw.controllers.AuthUserController
 import info.siddhuw.controllers.api.aws.AWSController
 import info.siddhuw.controllers.api.aws.ec2.AWSEC2Controller
 import info.siddhuw.models.daos.DBUserDAO
-import info.siddhuw.services.{AWSEC2Service, AWSService, JWTTokenService}
+import info.siddhuw.services.{ AWSEC2Service, AWSService, JWTTokenService }
 import org.scalatra.LifeCycle
 import org.squeryl.adapters.PostgreSqlAdapter
-import org.squeryl.{PrimitiveTypeMode, Session, SessionFactory}
+import org.squeryl.{ PrimitiveTypeMode, Session, SessionFactory }
 
 class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
   val conf = ConfigFactory.load("app")

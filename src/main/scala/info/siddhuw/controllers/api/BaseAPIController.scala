@@ -2,7 +2,7 @@ package info.siddhuw.controllers.api
 
 import info.siddhuw.auth.APIAuthenticationSupport
 import info.siddhuw.controllers.JsonController
-import org.json4s.{DefaultFormats, Formats}
+import org.json4s.{ DefaultFormats, Formats }
 import org.scalatra.CorsSupport
 
 /**

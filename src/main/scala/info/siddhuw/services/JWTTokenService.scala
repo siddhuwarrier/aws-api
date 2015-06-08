@@ -6,8 +6,8 @@ import java.util.concurrent.TimeoutException
 import com.google.common.io.Resources
 import com.nimbusds.jose.crypto._
 import com.nimbusds.jose.jwk._
-import com.nimbusds.jose.{JWSAlgorithm, JWSHeader}
-import com.nimbusds.jwt.{JWTClaimsSet, ReadOnlyJWTClaimsSet, SignedJWT}
+import com.nimbusds.jose.{ JWSAlgorithm, JWSHeader }
+import com.nimbusds.jwt.{ JWTClaimsSet, ReadOnlyJWTClaimsSet, SignedJWT }
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
 import info.siddhuw.models.DBUser
@@ -17,7 +17,7 @@ import org.joda.time.chrono.ISOChronology
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{ Await, Future }
 import scala.language.postfixOps
 import scala.util.Try
 

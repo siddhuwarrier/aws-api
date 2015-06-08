@@ -1,7 +1,7 @@
 package info.siddhuw.utils.crypto
 
 import org.owasp.esapi.reference.crypto.JavaEncryptor
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 /**
  * @author Siddhu Warrier

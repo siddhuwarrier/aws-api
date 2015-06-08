@@ -4,13 +4,13 @@ import com.google.common.base.CharMatcher
 import com.google.common.net.HttpHeaders._
 import info.siddhuw.models.APISchema._
 import info.siddhuw.models.daos.DBUserDAO
-import info.siddhuw.models.{AWSRegion, DBUser}
-import info.siddhuw.services.{AWSService, JWTTokenService}
+import info.siddhuw.models.{ AWSRegion, DBUser }
+import info.siddhuw.services.{ AWSService, JWTTokenService }
 import info.siddhuw.utils.DatabaseSupport
 import info.siddhuw.utils.crypto.PasswordHasher
 import org.apache.commons.httpclient.HttpStatus._
 import org.json4s.jackson.JsonMethods._
-import org.json4s.{DefaultFormats, Formats}
+import org.json4s.{ DefaultFormats, Formats }
 import org.scalatest._
 import org.scalatra.test.scalatest.ScalatraSuite
 

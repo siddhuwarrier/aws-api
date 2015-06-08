@@ -3,7 +3,7 @@ package info.siddhuw.models.daos
 import info.siddhuw.models.APISchema._
 import info.siddhuw.utils.DatabaseSupport
 import info.siddhuw.utils.builders.DBUserBuilder
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FlatSpec, Matchers}
+import org.scalatest.{ BeforeAndAfter, BeforeAndAfterAll, FlatSpec, Matchers }
 
 /**
  * @author Siddhu Warrier

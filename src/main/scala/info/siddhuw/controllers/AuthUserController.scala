@@ -5,8 +5,8 @@ import info.siddhuw.controllers.AuthUserController._
 import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.JWTTokenService
 import net.logstash.logback.marker.Markers._
-import org.json4s.{DefaultFormats, Formats}
-import org.scalatra.{CorsSupport, Unauthorized}
+import org.json4s.{ DefaultFormats, Formats }
+import org.scalatra.{ CorsSupport, Unauthorized }
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConversions._
