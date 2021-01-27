@@ -30,7 +30,7 @@ class UserPasswordStrategySpec extends AnyFlatSpec
 
   implicit val httpResponse = mock[HttpServletResponse]
   implicit val httpRequest = mock[HttpServletRequest]
-  val validPassword = "valid-password"
+  val validPassword = "burak-crush-pineapple"
 
   val config = ConfigFactory.load("app")
 

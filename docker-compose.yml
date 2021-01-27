@@ -1,0 +1,30 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: BurakCr3shP1neapple!
+      POSTGRES_DB: aws_api
+    volumes:
+      - ./init_aws_api.sql:/docker-entrypoint-initdb.d/init_aws_api.sql
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5432" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  microservice:
+    depends_on:
+      - "db"
+    build: .
+    volumes:
+      - ./target/aws-api-0.1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/aws.war
+    ports:
+      - '8080:8080'
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/aws_api
+      DB_PASSWORD: BurakCr3shP1neapple!
