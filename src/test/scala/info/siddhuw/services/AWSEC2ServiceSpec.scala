@@ -1,11 +1,7 @@
 package info.siddhuw.services
 
 import com.amazonaws.AmazonClientException
-<<<<<<< HEAD
-import com.amazonaws.regions.{Region, Regions}
-=======
 import com.amazonaws.regions.{ Region, Regions }
->>>>>>> 6490aae... - Make AWS operations asynchronous
 import com.amazonaws.services.ec2.AmazonEC2
 import com.amazonaws.services.ec2.model._
 import com.typesafe.config.ConfigFactory
@@ -95,7 +91,7 @@ class AWSEC2ServiceSpec extends AnyFlatSpec
     })
 
     val awsEC2Service = new AWSEC2Service(mockEC2)
-    an [AmazonClientException] should be thrownBy awsEC2Service.list(Regions.US_EAST_1.getName)
+    an[AmazonClientException] should be thrownBy awsEC2Service.list(Regions.US_EAST_1.getName)
   }
 
   private def buildMockResult(expectedInstances: List[EC2Instance]): DescribeInstancesResult = {
