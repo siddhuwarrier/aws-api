@@ -12,8 +12,7 @@ wish to access it.
     
 ## API Documentation
 
-> NOTE: As mentioned below, I would replace this with Swagger or something similar in production. See http://swagger-ui.scansafe.cisco.com:8082 
-(internal Cisco network) for an example of a Swagger UI my team deployed a few months ago.
+> NOTE: I would replace this with Swagger or something similar in production. 
 
 | Endpoint        | Params | Response  |
 | ------------- |:-------------:| -----:|
