@@ -12,7 +12,7 @@ wish to access it.
     
 ## API Documentation
 
-> NOTE: I would replace this with Swagger or something similar in production. 
+> NOTE: I would replace this with Swagger or something similar in production. An alternate option would be to use a GraphQL API such as https://edge.us.cdo.cisco.com/api-explorer)
 
 | Endpoint        | Params | Response  |
 | ------------- |:-------------:| -----:|
