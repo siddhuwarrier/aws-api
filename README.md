@@ -1,7 +1,7 @@
 
 [![Build Status](https://travis-ci.com/siddhuwarrier/aws-api.svg?token=psjzrsiRHzBi3DhiqeaA&branch=master)](https://travis-ci.com/siddhuwarrier/aws-api)
 
-The Lockhart AWS API is a Scala application written using the Scalatra framework.
+This is a simple Scala application written using the Scalatra framework that retrieves a list of instances off AWS using the EC2 API.
 
 ## Source Code
 
