@@ -13,13 +13,14 @@ import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.{ DefaultFormats, _ }
 import org.scalatest._
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.featurespec.AnyFeatureSpec
+import org.scalatestplus.mockito.MockitoSugar
 
 /**
  * @author Siddhu Warrier
  */
 
-class AuthUserControllerSpec extends FeatureSpec
+class AuthUserControllerSpec extends AnyFeatureSpec
     with JsonScalatraSuite
     with BeforeAndAfterAll
     with BeforeAndAfter

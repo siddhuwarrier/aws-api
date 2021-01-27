@@ -1,9 +1,8 @@
 package info.siddhuw.auth
 
 import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
-
 import com.google.common.net.HttpHeaders._
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ Config, ConfigFactory }
 import info.siddhuw.controllers.AuthUserController
 import info.siddhuw.models.DBUser
 import info.siddhuw.models.daos.DBUserDAO
@@ -12,8 +11,9 @@ import info.siddhuw.utils.builders.DBUserBuilder
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -22,15 +22,15 @@ import scala.language.postfixOps
 /**
  * @author Siddhu Warrier
  */
-class TokenStrategySpec extends FlatSpec
+class TokenStrategySpec extends AnyFlatSpec
     with MockitoSugar
     with Matchers {
-  val app = mock[AuthUserController]
-  val config = ConfigFactory.load("app")
-  val mockUserDao = mock[DBUserDAO]
+  val app: AuthUserController = mock[AuthUserController]
+  val config: Config = ConfigFactory.load("app")
+  val mockUserDao: DBUserDAO = mock[DBUserDAO]
 
-  implicit val httpResponse = mock[HttpServletResponse]
-  implicit val httpRequest = mock[HttpServletRequest]
+  implicit val httpResponse: HttpServletResponse = mock[HttpServletResponse]
+  implicit val httpRequest: HttpServletRequest = mock[HttpServletRequest]
 
   when(app.request).thenReturn(httpRequest)
 

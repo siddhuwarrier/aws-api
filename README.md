@@ -5,7 +5,7 @@ The Lockhart AWS API is a Scala application written using the Scalatra framework
 The source code is in a private Bitbucket repository. Please contact [Siddhu Warrier](mailto:siddhu@siddhuw.info) if you
 wish to access it.
 
-    git clone git@bitbucket.org:siddhuwarrier/lockhart-aws-api.git
+    git clone git@github.com:siddhuwarrier/aws-api.git
     
 ### Code Statistics
 
@@ -42,7 +42,7 @@ the hyperlinks from the main page work. However, you can open each individual HT
     
 ### Running locally
 
-To run the app locally, first set up PostgreSQL, and create a database `lockhart`. Then, connect to the database as your user
+To run the app locally, first set up PostgreSQL, and create a database `aws_api`. Then, connect to the database as your user
 and execute the following DDL statements.
 
     create table db_user(username varchar(256), pw_hash varchar(2048), salt varchar(2048));
