@@ -10,12 +10,6 @@ wish to access it.
 
     git clone git@github.com:siddhuwarrier/aws-api.git
     
-### Code Statistics
-
-(Derived from scoverage report; see below on how to produce the report for yourself)
-* Code Coverage: 90.29% (Statement), 100% (Branch)
-* Number of tests: 45
-
 ## API Documentation
 
 > NOTE: As mentioned below, I would replace this with Swagger or something similar in production. See http://swagger-ui.scansafe.cisco.com:8082 
@@ -30,11 +24,12 @@ wish to access it.
 
 ## Build and deploy instructions
 
-To run just tests, type `mvn test`. This will also run the integration tests (which use an in-memory H2 database).
+### Pre-requisites
+- Java 11
+- Maven 3.6
+- Docker Engine (if you wish to run locally)
 
-> The integration tests are not being run separately to the unit tests because of a limitation in the `scoverage` code
-coverage tool I've used. The next version of `scoverage` should support this, as a result of which the pom.xml has been
-left configured in order to run both the unit and the integration tests.
+To run just tests, type `mvn test`. This will also run the integration tests (which use an in-memory H2 database).
 
 To generate a code coverage report, run
  
@@ -45,55 +40,36 @@ the hyperlinks from the main page work. However, you can open each individual HT
     
 ### Running locally
 
-To run the app locally, first set up PostgreSQL, and create a database `aws_api`. Then, connect to the database as your user
-and execute the following DDL statements.
-
-    create table db_user(username varchar(256), pw_hash varchar(2048), salt varchar(2048));
-    create unique index idx2541054d on db_user(username);
-    
-Then, edit `src/main/resources/app.conf` to set the following values (you do not need to change any of the other values):
-  
+To run the app locally, first set your AWS access key and secret access key in app.conf (in an AWS deployment, we would use IAM roles):
+``` 
       aws = {
         access_key_id = "ENTER_ACCESS_KEY_HERE"
         secret_access_key = "ENTER_SECRET_HERE"
       }
-      
-      db = {
-        username = YOUR-POSTGRES-USERNAME
-        password = YOUR-POSTGRES-PASSWORD
-      }
-  
-Then, run
+```
 
-    mvn package
-    java -jar target/dependency/webapp-runner.jar --port 8080 target/*.war
+run:
+```
+docker-compose build
+docker-compose up -d
+```
+
+You can view the logs by typing:
+```
+docker logs -f <directory-name>_microservice_1
+```
     
 > Note: You may receive some warnings as Tomcat starts up.
 
 The API should be accessible on http://localhost:8080. However, please note that you cannot access the API without first authenticating.
-The easiest way of doing so is to start the frontend app up as described in the `frontend` directory/Git submodule. 
+
+The PostGres Docker container is initialised with a single user `admin` with the password `burak-crush-pineapple` (note: the password is stored hashed and salted in the DB).
+
+You can get a JWT token to make requests using this username and password as follows:
+```
+curl --silent http://localhost:8080/auth -X POST -d "{\"username\":\"admin\", \"password\":\"burak-crush-pineapple\"}" -H "Content-Type:application/json"
+```
     
-### Deployment to Heroku
-
-To deploy the application to Heroku (you need a Heroku application set up, and your credentials configured in the Heroku
-toolbelt), edit the below section of the `pom.xml` file and replace the `appName` with the name of your app 
-
-            <configuration>
-                <appName>YOUR APP NAME GOES HERE</appName>
-                <processTypes>
-                    <web>java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war</web>
-                </processTypes>
-            </configuration>
-            
-Your Heroku application should contain the following add-ons:
-* PostGreSQL
-
-No migration scripts have been provided, as a result of which you will have to execute the following DDL after connecting
-to the PostGres database using `heroku pg:psql` and execute the DDL statements specified in the previous section.
-
-You will also need to use Heroku config vars for each of the settings in app.conf that you wish to override. `app.conf` has
-the environment variables corresponding to each of those settings.
-
 ## Note on Logging
 
 All logs are written in the `logstash` format. This would potentially allow for it to be fed into ElasticSearch and viewed
@@ -104,4 +80,4 @@ on Kibana.
 * Migration scripts for DB schema changes.
 * API documentation using Swagger.
 * Move hmac_key out of source control into configuration management.
-* The OWSAP Enterprise Seucrity API requires all logging go through log4j. Either switch to log4j or replace ESAPI.
+* The OWSAP Enterprise Security API requires all logging go through log4j. Either switch to log4j or replace ESAPI.

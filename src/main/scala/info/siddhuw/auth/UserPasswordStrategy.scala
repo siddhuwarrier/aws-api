@@ -47,10 +47,9 @@ class UserPasswordStrategy(protected val app: ScalatraBase, val userDao: DBUserD
   }
 
   private def authenticateAgainstDB(username: String, password: String): Future[Option[DBUser]] = Future {
-    val logData = Map("action" -> "authenticate-against-db")
-
     userDao.findById(username) match {
       case Some(user) if PasswordHasher.hash(password, user.salt) == user.pwHash ⇒
+        logger.debug("Found user {}", user)
         Some(user)
       case _ ⇒
         None

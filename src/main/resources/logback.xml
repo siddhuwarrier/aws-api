@@ -1,7 +1,7 @@
 <configuration>
 
     <appender name="file" class="ch.qos.logback.core.FileAppender">
-        <file>/tmp/intl-odds-calculator.log</file>
+        <file>logs/aws_api.log</file>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -11,7 +11,7 @@
     <root level="WARN">
         <appender-ref ref="console"/>
     </root>
-    <logger name="info.siddhuw" level="INFO">
+    <logger name="info.siddhuw" level="DEBUG">
         <appender-ref ref="console"/>
     </logger>
 
