@@ -51,7 +51,7 @@
         <heroku-plugin.version>0.4.3</heroku-plugin.version>
         <dependency-plugin.version>2.3</dependency-plugin.version>
         <scalariform-plugin.version>0.1.4</scalariform-plugin.version>
-        <scoverage.plugin.version>1.0.4</scoverage.plugin.version>
+        <scoverage.plugin.version>1.4.1</scoverage.plugin.version>
         <esapi.version>2.1.0</esapi.version>
         <aws-java-sdk.version>1.9.40</aws-java-sdk.version>
         <scalatest-mockito.version>1.0.0-M2</scalatest-mockito.version>
@@ -200,6 +200,7 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${basedir}/src/main/scala</sourceDirectory>
         <plugins>
             <!-- Compilation etcetera -->
             <plugin>
