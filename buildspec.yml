@@ -6,5 +6,5 @@ phases:
       java: corretto11
   build:
     commands:
-      - mvn scoverage:report
+      - mvn scoverage:report -Pcoverage
 
