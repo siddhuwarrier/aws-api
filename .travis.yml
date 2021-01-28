@@ -1,8 +1,0 @@
-language: scala
-scala:
-  - 2.13.4
-script: mvn scoverage:report -Pcoverage
-jdk:
-  - openjdk11
-after_success:
-  bash <(curl -s https://codecov.io/bash)
