@@ -7,4 +7,3 @@ phases:
   build:
     commands:
       - mvn scoverage:report -Pcoverage
-
