@@ -28,7 +28,6 @@ class AWSEC2Service(val ec2: AmazonEC2)(implicit ec: ExecutionContext) {
    * @return the list of AWS EC2 instances of type EC2Instance
    */
   def list(region: String, activeOnly: Boolean = true): List[EC2Instance] = {
-    val filter = new Filter()
     val instanceResult = describeInstances(region, activeOnly)
 
     instanceResult.getReservations.asScala.flatMap {

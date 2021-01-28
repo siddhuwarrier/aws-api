@@ -28,3 +28,5 @@ services:
     environment:
       DB_URL: jdbc:postgresql://db:5432/aws_api
       DB_PASSWORD: BurakCr3shP1neapple!
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}

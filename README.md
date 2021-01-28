@@ -26,7 +26,8 @@ wish to access it.
 ### Pre-requisites
 - Java 11
 - Maven 3.6
-- Docker Engine (if you wish to run locally)
+- Docker Engine (if you wish to run the service locally)
+- AWS credentials (if you wish to run the service locally)
 
 To run just tests, type `mvn test`. This will also run the integration tests (which use an in-memory H2 database).
 
@@ -39,12 +40,10 @@ the hyperlinks from the main page work. However, you can open each individual HT
     
 ### Running locally
 
-To run the app locally, first set your AWS access key and secret access key in app.conf (in an AWS deployment, we would use IAM roles):
+To run the app locally, first set your AWS access key and secret access key in a file in the root of your repo called `.env` (in an AWS deployment, we would use IAM roles):
 ``` 
-      aws = {
-        access_key_id = "ENTER_ACCESS_KEY_HERE"
-        secret_access_key = "ENTER_SECRET_HERE"
-      }
+AWS_ACCESS_KEY_ID=<enter-your-access-key>
+AWS_SECRET_ACCESS_KEY=<enter-your-secret-access-key>
 ```
 
 run:

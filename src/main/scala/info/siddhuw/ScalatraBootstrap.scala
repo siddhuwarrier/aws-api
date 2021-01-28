@@ -41,8 +41,7 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
 
     implicit val awsService = new AWSService
 
-    val awsCreds = new BasicAWSCredentials(conf.getString("aws.access_key_id"), conf.getString("aws.secret_access_key"))
-    implicit val awsEc2Service = new AWSEC2Service(new AmazonEC2Client(awsCreds))
+    implicit val awsEc2Service = new AWSEC2Service(new AmazonEC2Client())
 
     context.mount(new AuthUserController, "/auth/*")
     context.mount(new AWSController, "/api/aws/*")
