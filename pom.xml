@@ -86,6 +86,11 @@
         </dependency>
         <dependency>
             <groupId>org.scalatra</groupId>
+            <artifactId>scalatra-metrics_${scala.major.version}</artifactId>
+            <version>${scalatra.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatra</groupId>
             <artifactId>scalatra-json_${scala.major.version}</artifactId>
             <version>${scalatra.version}</version>
         </dependency>

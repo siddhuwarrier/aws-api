@@ -50,8 +50,8 @@ class AuthUserControllerSpec extends AnyFeatureSpec
     dbUsers.deleteWhere(_.username === user.username)
   }
 
-  feature("Authenticating a user") {
-    scenario("Successful Authentication") {
+  Feature("Authenticating a user") {
+    Scenario("Successful Authentication") {
       Given("I am a registered user")
       insert(user)
 
@@ -68,7 +68,7 @@ class AuthUserControllerSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("Invalid password") {
+    Scenario("Invalid password") {
       Given("I am a registered user")
       insert(user)
 
@@ -85,7 +85,7 @@ class AuthUserControllerSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("Invalid username") {
+    Scenario("Invalid username") {
       Given("I am a user that is not registered")
       val dbUser = DBUserBuilder.build()
       userDao.findById(dbUser.username) should equal(None) //verify that the user does not exist in DB

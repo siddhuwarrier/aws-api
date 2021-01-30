@@ -50,8 +50,8 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
     super.afterAll()
   }
 
-  feature("Retrieve the list of AWS instances in a region") {
-    scenario("Retrieve the full list of active AWS instances") {
+  Feature("Retrieve the list of AWS instances in a region") {
+    Scenario("Retrieve the full list of active AWS instances") {
       Given("I have active EC2 instances")
       val expected = List(EC2InstanceBuilder.build)
       val region = Regions.EU_WEST_1.getName
@@ -74,7 +74,7 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("Respond with 400 if region query parameter not specified") {
+    Scenario("Respond with 400 if region query parameter not specified") {
       Given("I am logged in")
       loggedIn {
         (dbUser: DBUser, token: String) ⇒
@@ -91,7 +91,7 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("Respond with 400 if region query parameter contains region that is not recognised by the EC2 service") {
+    Scenario("Respond with 400 if region query parameter contains region that is not recognised by the EC2 service") {
       val invalidRegion = "invalid-region"
       Mockito.when(awsEC2Service.list(invalidRegion, activeOnly = true)).thenThrow(new IllegalArgumentException("Invalid region"))
 
@@ -112,7 +112,7 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("Respond with 401 if the user is not logged in") {
+    Scenario("Respond with 401 if the user is not logged in") {
       val region = "some-region-it-does-not-matter-as-we-wont-be-performing-a-request"
       When("I retrieve the list of AWS instances")
       get("/api/aws/ec2/instances", params = Map("region" -> region)) {
@@ -126,7 +126,7 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("respond with 500 if EC2 service returns null unexpectedly") {
+    Scenario("respond with 500 if EC2 service returns null unexpectedly") {
       val region = Regions.AP_SOUTHEAST_1.getName
       Mockito.when(awsEC2Service.list(region, activeOnly = true)).thenReturn(null)
 
@@ -146,7 +146,7 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("Respond with 503 if failure retrieving instances from EC2") {
+    Scenario("Respond with 503 if failure retrieving instances from EC2") {
       val region = Regions.AP_SOUTHEAST_1.getName
 
       Given("I am logged in")
@@ -167,7 +167,7 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("Respond with 500 if the AWS credentials configured are invalid") {
+    Scenario("Respond with 500 if the AWS credentials configured are invalid") {
       val invalidCredentialsException = new AmazonServiceException("Auth fail")
       invalidCredentialsException.setStatusCode(SC_UNAUTHORIZED)
       val region = Regions.EU_WEST_1.getName
