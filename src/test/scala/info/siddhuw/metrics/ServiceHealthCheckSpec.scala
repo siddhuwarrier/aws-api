@@ -6,6 +6,6 @@ import org.scalatest.matchers.should.Matchers
 
 class ServiceHealthCheckSpec extends AnyFlatSpec with Matchers {
   "ServiceHealthCheck" should "always return true if the application is reachable" in {
-    new ServiceHealthCheck().check() should equal (Result.healthy())
+    new ServiceHealthCheck().check() should equal(Result.healthy())
   }
 }
