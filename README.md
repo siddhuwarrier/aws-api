@@ -85,5 +85,5 @@ viewed on Kibana.
 
 * Migration scripts for DB schema changes.
 * API documentation using Swagger.
-* Move hmac_key out of source control into configuration management.
+* Move hmac_key used to sign JWT tokens out of source control into configuration management.
 * The OWSAP Enterprise Security API requires all logging go through log4j. Either switch to log4j or replace ESAPI.
