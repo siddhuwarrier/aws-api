@@ -1,21 +1,25 @@
 package info.siddhuw
 
 import javax.servlet.ServletContext
-
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.ec2.AmazonEC2Client
 import com.typesafe.config.ConfigFactory
 import info.siddhuw.controllers.AuthUserController
+import info.siddhuw.controllers.api.VersionsController
 import info.siddhuw.controllers.api.aws.AWSController
 import info.siddhuw.controllers.api.aws.ec2.AWSEC2Controller
+import info.siddhuw.metrics.ServiceHealthCheck
 import info.siddhuw.models.daos.DBUserDAO
-import info.siddhuw.services.{ AWSEC2Service, AWSService, JWTTokenService }
+import info.siddhuw.services.{ AWSEC2Service, AWSService, JWTTokenService, VersionsService }
 import org.scalatra.LifeCycle
+import org.scalatra.metrics.MetricsBootstrap
+import org.scalatra.metrics.MetricsSupportExtensions.metricsSupportExtensions
 import org.squeryl.adapters.PostgreSqlAdapter
 import org.squeryl.{ PrimitiveTypeMode, Session, SessionFactory }
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
+class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode with MetricsBootstrap {
   val conf = ConfigFactory.load("app")
 
   SessionFactory.concreteFactory = Some(() ⇒ {
@@ -38,14 +42,17 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode {
 
     implicit val dbUserDao = new DBUserDAO
     implicit val jwtTokenService = new JWTTokenService(dbUserDao)
-
     implicit val awsService = new AWSService
-
     implicit val awsEc2Service = new AWSEC2Service(new AmazonEC2Client())
+    implicit val versionsService = new VersionsService
+
+    healthCheckRegistry.register("service", new ServiceHealthCheck)
 
     context.mount(new AuthUserController, "/auth/*")
+    context.mount(new VersionsController, "/versions/*")
     context.mount(new AWSController, "/api/aws/*")
     context.mount(new AWSEC2Controller, "/api/aws/ec2/*")
+    context.mountHealthCheckServlet("/health")
   }
 
   private def initDb(): Unit = {

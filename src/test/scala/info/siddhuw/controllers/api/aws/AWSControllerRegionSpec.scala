@@ -42,8 +42,8 @@ class AWSControllerRegionSpec extends AnyFeatureSpec
     super.afterAll()
   }
 
-  feature("Retrieve the list of AWS regions") {
-    scenario("Retrieve the full list of regions, except for China and GovCloud") {
+  Feature("Retrieve the list of AWS regions") {
+    Scenario("Retrieve the full list of regions, except for China and GovCloud") {
       Given("I am logged in")
       loggedIn {
         (dbUser: DBUser, token: String) ⇒
@@ -63,7 +63,7 @@ class AWSControllerRegionSpec extends AnyFeatureSpec
       }
     }
 
-    scenario("Cannot retrieve AWS regions if not logged in") {
+    Scenario("Cannot retrieve AWS regions if not logged in") {
       Given("I am not logged in")
       When("I retrieve the list of AWS regions")
       get("/api/aws/regions") {
