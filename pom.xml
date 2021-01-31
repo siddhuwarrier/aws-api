@@ -27,7 +27,7 @@
         <h2.version>1.4.187</h2.version>
         <postgres.version>9.4-1201-jdbc41</postgres.version>
         <guava.version>18.0</guava.version>
-        <webapp-runner.version>7.0.57.2</webapp-runner.version>
+        <webapp-runner.version>9.0.41.0</webapp-runner.version>
         <nimbus-jwt.version>3.10</nimbus-jwt.version>
         <scribe.version>1.3.7</scribe.version>
         <json4s.version>3.6.10</json4s.version>
@@ -347,7 +347,7 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>com.github.jsimone</groupId>
+                                    <groupId>com.heroku</groupId>
                                     <artifactId>webapp-runner</artifactId>
                                     <version>${webapp-runner.version}</version>
                                     <destFileName>webapp-runner.jar</destFileName>
@@ -356,17 +356,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.heroku.sdk</groupId>
-                <artifactId>heroku-maven-plugin</artifactId>
-                <version>${heroku-plugin.version}</version>
-                <configuration>
-                    <appName>aws-api</appName>
-                    <processTypes>
-                        <web>java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war</web>
-                    </processTypes>
-                </configuration>
             </plugin>
         </plugins>
     </build>
