@@ -16,11 +16,11 @@ wish to access it.
 
 | Endpoint        | Params | Response  |
 | ------------- |:-------------:| -----:|
-| POST /auth      | BODY {"username": username, "password": password} | 200 with JSON containing JWT token, 401 UNAUTHORIZED if username and/or password are invalid |
+| POST /auth      | BODY {"username": username, "password": password} | 200 with JSON containing JWT token, 401 UNAUTHORIZED if username and/or password are invalid) |
 | GET /versions      |  | 200 with JSON containing git commit hash of latest commit |
 | GET /health      |  | 200 with JSON containing git commit hash of latest commit if running |
-| GET /api/aws/regions      | AUTHORIZATION header set with bearer token returned in  (Bearer `JWT token`)      |   200 with JSON of list of regions, 401 UNAUTHORIZED  |
-| GET /api/aws/ec2/instances | AUTHORIZATION header set with bearer token returned in  (Bearer `JWT token`)     |    200 with JSON of list of instances, 401 UNAUTHORIZED, 500 INTERNAL SERVER ERROR (if AWS credentials invalid), 503 SERVICE UNAVAILABLE (if AWS inaccessible) |
+| GET /api/aws/regions      | AUTHORIZATION header set with bearer token returned in  (Bearer `JWT token`)      |   200 with JSON of list of regions, 401 UNAUTHORIZED, 429 TOO MANY REQUESTS if you exceed the rate limit (managed using a token bucket algorithm  |
+| GET /api/aws/ec2/instances | AUTHORIZATION header set with bearer token returned in  (Bearer `JWT token`)     |    200 with JSON of list of instances, 401 UNAUTHORIZED, 429 TOO MANY REQUESTS if you exceed the rate limit (managed using a token bucket algorithm, 500 INTERNAL SERVER ERROR (if AWS credentials invalid), 503 SERVICE UNAVAILABLE (if AWS inaccessible) |
 
 ## AWS deployment
 

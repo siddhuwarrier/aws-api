@@ -1,9 +1,9 @@
 package info.siddhuw.controllers.api.aws
 
 import info.siddhuw.controllers.api.BaseAPIController
-import info.siddhuw.controllers.api.aws.AWSController._
+import info.siddhuw.controllers.api.BaseAPIController._
 import info.siddhuw.models.daos.DBUserDAO
-import info.siddhuw.services.AWSService
+import info.siddhuw.services.{ AWSService, ThrottlingService }
 import net.logstash.logback.marker.Markers._
 import org.scalatra.Unauthorized
 import org.slf4j.LoggerFactory
@@ -14,7 +14,7 @@ import scala.jdk.CollectionConverters._
  * @author Siddhu Warrier
  */
 
-class AWSController(implicit val awsService: AWSService, implicit val userDao: DBUserDAO) extends BaseAPIController {
+class AWSController(implicit val awsService: AWSService, implicit val userDao: DBUserDAO, implicit val throttlingService: ThrottlingService) extends BaseAPIController {
   val logger = LoggerFactory.getLogger(classOf[AWSController])
 
   get("/regions") {
@@ -27,12 +27,8 @@ class AWSController(implicit val awsService: AWSService, implicit val userDao: D
 
         regions
       case None ⇒
-        logger.error(appendEntries(logData.asJava), s"Failed: $UnauthorizedMsg")
-        halt(Unauthorized("msg" -> UnauthorizedMsg))
+        logger.error(appendEntries(logData.asJava), s"Failed: $UnauthorizedErrMsg")
+        halt(Unauthorized("msg" -> UnauthorizedErrMsg))
     }
   }
-}
-
-object AWSController {
-  val UnauthorizedMsg = "You need to be logged in to view this endpoint"
 }

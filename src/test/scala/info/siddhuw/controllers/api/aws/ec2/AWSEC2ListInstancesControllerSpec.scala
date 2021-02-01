@@ -4,23 +4,28 @@ import com.amazonaws.{ AmazonClientException, AmazonServiceException }
 import com.amazonaws.regions.Regions
 import com.google.common.base.CharMatcher
 import com.google.common.net.HttpHeaders._
+import info.siddhuw.controllers.api.BaseAPIController
 import info.siddhuw.models.APISchema._
 import info.siddhuw.models.{ DBUser, EC2Instance }
 import info.siddhuw.models.daos.DBUserDAO
-import info.siddhuw.services.{ AWSEC2Service, JWTTokenService }
+import info.siddhuw.services.{ AWSEC2Service, JWTTokenService, ThrottlingService }
 import info.siddhuw.utils.DatabaseSupport
 import info.siddhuw.utils.builders.EC2InstanceBuilder
 import info.siddhuw.utils.crypto.PasswordHasher
 import org.json4s.jackson.JsonMethods._
 import org.json4s.{ DefaultFormats, Formats }
-import org.mockito.Mockito
 import org.scalatest._
 import org.scalatra.test.scalatest.ScalatraSuite
 import org.apache.commons.httpclient.HttpStatus._
-import info.siddhuw.controllers.api.aws._
+import org.mockito.Matchers.any
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
+
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 /**
  * @author Siddhu Warrier
@@ -29,13 +34,15 @@ import org.scalatestplus.mockito.MockitoSugar
 class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
     with GivenWhenThen
     with BeforeAndAfterAll
+    with BeforeAndAfter
     with DatabaseSupport
     with ScalatraSuite
     with MockitoSugar
     with Matchers {
-  implicit val awsEC2Service = mock[AWSEC2Service]
+  implicit val mockAwsEc2Service: AWSEC2Service = mock[AWSEC2Service]
   //mock out dependency that connects to the internet
-  implicit val userDao = new DBUserDAO
+  implicit val userDao: DBUserDAO = new DBUserDAO
+  implicit val mockThrottlingService: ThrottlingService = mock[ThrottlingService]
   addServlet(new AWSEC2Controller, "/api/aws/ec2/*")
 
   implicit def jsonFormats: Formats = DefaultFormats
@@ -50,16 +57,24 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
     super.afterAll()
   }
 
+  before {
+    when(mockThrottlingService.consumeToken(any[DBUser])).thenAnswer(_ ⇒ Left())
+  }
+
+  after {
+    Mockito.reset(mockThrottlingService, mockAwsEc2Service)
+  }
+
   Feature("Retrieve the list of AWS instances in a region") {
     Scenario("Retrieve the full list of active AWS instances") {
       Given("I have active EC2 instances")
       val expected = List(EC2InstanceBuilder.build)
       val region = Regions.EU_WEST_1.getName
-      Mockito.when(awsEC2Service.list(region, activeOnly = true)).thenReturn(expected)
+      when(mockAwsEc2Service.list(region, activeOnly = true)).thenReturn(expected)
 
       And("I am logged in")
       loggedIn {
-        (dbUser: DBUser, token: String) ⇒
+        (_: DBUser, token: String) ⇒
 
           When("I retrieve the list of AWS instances")
           get("/api/aws/ec2/instances", params = Map("region" -> region), headers = Map(AUTHORIZATION -> ("Bearer " + token))) {
@@ -73,11 +88,40 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
           }
       }
     }
+    Scenario("Respond with 429 if the user has made more queries in a minute than the limit") {
+      Given("I have active EC2 instances")
+      val expected = List(EC2InstanceBuilder.build)
+      val region = Regions.EU_WEST_1.getName
+      when(mockAwsEc2Service.list(region, activeOnly = true)).thenReturn(expected)
+
+      And("I am logged in")
+      loggedIn {
+        (dbUser: DBUser, token: String) ⇒
+
+          And("I have already retrieved the list of AWS instances as many times than I am allowed to in a minute")
+          val expectedWaitTime = Right(30 seconds)
+          when(mockThrottlingService.consumeToken(dbUser)).thenReturn(expectedWaitTime)
+
+          And("I retrieve the list of AWS instances again within the same minute")
+          get("/api/aws/ec2/instances", params = Map("region" -> region), headers = Map(AUTHORIZATION -> ("Bearer " + token))) {
+
+            Then("I should receive a status code of 429")
+            status should equal(429)
+
+            And("I should receive an error message")
+            val errMsg = compact(render(parse(body) \ "msg"))
+            CharMatcher.is('\"').trimFrom(errMsg) should equal(BaseAPIController.TooManyRequestsMsg)
+
+            And("I should be told the number of seconds to wait in the `X-Rate-Limit-Retry-After-Seconds` header")
+            header.get("X-RateLimit-Remaining") should equal(Some(expectedWaitTime.value.toMillis.toString))
+          }
+      }
+    }
 
     Scenario("Respond with 400 if region query parameter not specified") {
       Given("I am logged in")
       loggedIn {
-        (dbUser: DBUser, token: String) ⇒
+        (_: DBUser, token: String) ⇒
 
           When("I retrieve the list of AWS instances")
           get("/api/aws/ec2/instances", headers = Map(AUTHORIZATION -> ("Bearer " + token))) {
@@ -93,11 +137,11 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
 
     Scenario("Respond with 400 if region query parameter contains region that is not recognised by the EC2 service") {
       val invalidRegion = "invalid-region"
-      Mockito.when(awsEC2Service.list(invalidRegion, activeOnly = true)).thenThrow(new IllegalArgumentException("Invalid region"))
+      when(mockAwsEc2Service.list(invalidRegion, activeOnly = true)).thenThrow(new IllegalArgumentException("Invalid region"))
 
       Given("I am logged in")
       loggedIn {
-        (dbUser: DBUser, token: String) ⇒
+        (_: DBUser, token: String) ⇒
 
           When("I retrieve the list of AWS instances")
           get("/api/aws/ec2/instances", params = Map("region" -> invalidRegion), headers = Map(AUTHORIZATION -> ("Bearer " + token))) {
@@ -122,17 +166,17 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
 
         And("I should receive an error message")
         val errMsg = compact(render(parse(body) \ "msg"))
-        CharMatcher.is('\"').trimFrom(errMsg) should equal(AWSEC2Controller.UnauthorizedErrMsg)
+        CharMatcher.is('\"').trimFrom(errMsg) should equal(BaseAPIController.UnauthorizedErrMsg)
       }
     }
 
     Scenario("respond with 500 if EC2 service returns null unexpectedly") {
       val region = Regions.AP_SOUTHEAST_1.getName
-      Mockito.when(awsEC2Service.list(region, activeOnly = true)).thenReturn(null)
+      when(mockAwsEc2Service.list(region, activeOnly = true)).thenReturn(null)
 
       Given("I am logged in")
       loggedIn {
-        (dbUser: DBUser, token: String) ⇒
+        (_: DBUser, token: String) ⇒
 
           When("I retrieve the list of AWS instances")
           get("/api/aws/ec2/instances", params = Map("region" -> region), headers = Map(AUTHORIZATION -> ("Bearer " + token))) {
@@ -151,11 +195,11 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
 
       Given("I am logged in")
       loggedIn {
-        (dbUser: DBUser, token: String) ⇒
+        (_: DBUser, token: String) ⇒
 
           When("I retrieve the list of AWS instances")
           And("the EC2 Service fails")
-          Mockito.when(awsEC2Service.list(region, activeOnly = true)).thenThrow(new AmazonClientException("Mock AWS failure"))
+          when(mockAwsEc2Service.list(region, activeOnly = true)).thenThrow(new AmazonClientException("Mock AWS failure"))
           get("/api/aws/ec2/instances", params = Map("region" -> region), headers = Map(AUTHORIZATION -> ("Bearer " + token))) {
             Then("I should receive a status code of 503")
             status should equal(SC_SERVICE_UNAVAILABLE)
@@ -174,10 +218,10 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
 
       Given("I am logged in")
       loggedIn {
-        (dbUser: DBUser, token: String) ⇒
+        (_: DBUser, token: String) ⇒
           When("I retrieve the list of AWS instances")
           And("The EC2 service fails due to bad credentials")
-          Mockito.when(awsEC2Service.list(region, activeOnly = true)).thenThrow(invalidCredentialsException)
+          when(mockAwsEc2Service.list(region, activeOnly = true)).thenThrow(invalidCredentialsException)
           get("/api/aws/ec2/instances", params = Map("region" -> region), headers = Map(AUTHORIZATION -> ("Bearer " + token))) {
 
             Then("I should receive a status code of 500")

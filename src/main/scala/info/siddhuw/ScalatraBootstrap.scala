@@ -10,7 +10,7 @@ import info.siddhuw.controllers.api.aws.AWSController
 import info.siddhuw.controllers.api.aws.ec2.AWSEC2Controller
 import info.siddhuw.metrics.ServiceHealthCheck
 import info.siddhuw.models.daos.DBUserDAO
-import info.siddhuw.services.{ AWSEC2Service, AWSService, JWTTokenService, VersionsService }
+import info.siddhuw.services.{ AWSEC2Service, AWSService, JWTTokenService, ThrottlingService, VersionsService }
 import org.scalatra.LifeCycle
 import org.scalatra.metrics.MetricsBootstrap
 import org.scalatra.metrics.MetricsSupportExtensions.metricsSupportExtensions
@@ -45,6 +45,7 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode with MetricsBoo
     implicit val awsService = new AWSService
     implicit val awsEc2Service = new AWSEC2Service(new AmazonEC2Client())
     implicit val versionsService = new VersionsService
+    implicit val throttlingService = new ThrottlingService
 
     healthCheckRegistry.register("service", new ServiceHealthCheck)
 
