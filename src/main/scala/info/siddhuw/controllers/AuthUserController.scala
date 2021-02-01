@@ -2,6 +2,7 @@ package info.siddhuw.controllers
 
 import info.siddhuw.auth.LoginAuthenticationSupport
 import info.siddhuw.controllers.AuthUserController._
+import info.siddhuw.models.InputUser
 import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.JWTTokenService
 import net.logstash.logback.marker.Markers._
@@ -36,8 +37,7 @@ class AuthUserController(implicit val userDao: DBUserDAO, implicit val swagger: 
       summary "POST credentials to get JWT Token to use the API"
       description "This endpoint takes a username and password and returns a JWT Token if valid"
       parameters (
-        bodyParam[String]("username"),
-        bodyParam[String]("password"),
+        bodyParam[InputUser]("user-info"),
         headerParam[String]("Content-Type").allowableValues("application/json")))
 
   post("/", operation(authDocs)) {

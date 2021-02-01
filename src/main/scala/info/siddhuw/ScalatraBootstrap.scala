@@ -1,23 +1,22 @@
 package info.siddhuw
 
-import javax.servlet.ServletContext
-import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.ec2.AmazonEC2Client
 import com.typesafe.config.ConfigFactory
-import info.siddhuw.controllers.{ AuthUserController, AwsApiSwagger, ResourcesApp }
 import info.siddhuw.controllers.api.VersionsController
 import info.siddhuw.controllers.api.aws.AWSController
 import info.siddhuw.controllers.api.aws.ec2.AWSEC2Controller
+import info.siddhuw.controllers.{ AuthUserController, AwsApiSwagger, ResourcesApp }
 import info.siddhuw.metrics.ServiceHealthCheck
 import info.siddhuw.models.daos.DBUserDAO
-import info.siddhuw.services.{ AWSEC2Service, AWSService, JWTTokenService, ThrottlingService, VersionsService }
+import info.siddhuw.services._
 import org.scalatra.LifeCycle
 import org.scalatra.metrics.MetricsBootstrap
 import org.scalatra.metrics.MetricsSupportExtensions.metricsSupportExtensions
-import org.scalatra.swagger.{ Swagger, SwaggerEngine }
+import org.scalatra.swagger.{ ApiKey, Swagger }
 import org.squeryl.adapters.PostgreSqlAdapter
 import org.squeryl.{ PrimitiveTypeMode, Session, SessionFactory }
 
+import javax.servlet.ServletContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode with MetricsBootstrap {
@@ -49,10 +48,10 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode with MetricsBoo
     implicit val throttlingService: ThrottlingService = new ThrottlingService
     // swagger
     implicit val swagger: Swagger = new AwsApiSwagger
+    swagger.addAuthorization(ApiKey("Authorization", "header", "JWT Bearer Token authorization"))
 
     healthCheckRegistry.register("service", new ServiceHealthCheck)
 
-    // TODO restrict CORS allowed origins?
     context.setInitParameter("org.scalatra.cors.allowCredentials", "false")
     context.setInitParameter("org.scalatra.cors.enable", "true")
     context.setInitParameter("org.scalatra.cors.allowedOrigins", "*")
