@@ -12,7 +12,8 @@ wish to access it.
 
 ## API Documentation
 
-> NOTE: I would replace this with Swagger or something similar in production. An alternate option would be to use a GraphQL API such as https://edge.us.cdo.cisco.com/api-explorer)
+You can view the API documentation by loading up https://staging.awsapi.siddhuw.info/api-explorer/swagger.json in a 
+Swagger client.
 
 | Endpoint        | Params | Response  |
 | ------------- |:-------------:| -----:|
@@ -25,7 +26,7 @@ wish to access it.
 ## AWS deployment
 
 This microservice is deployed in an ECS container (Fargate) deployed in a VPC behind an ALB to AWS eu-west-2 London and
-can be accessed at `https://staging.awsapi.siddhuw.info`
+can be accessed at https://staging.awsapi.siddhuw.info.
 (use the endpoints above with the right username and password to use it). The entire deployment process is automated:
 
 - The AWS infrastructure is built using Terraform. See the git submodule in the `terraform`

@@ -6,8 +6,9 @@ import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.JWTTokenService
 import net.logstash.logback.marker.Markers._
 import org.json4s.{ DefaultFormats, Formats }
+import org.scalatra.swagger.{ Swagger, SwaggerSupport, SwaggerSupportSyntax }
 import org.scalatra.{ CorsSupport, Unauthorized }
-import org.slf4j.LoggerFactory
+import org.slf4j.{ Logger, LoggerFactory }
 
 import scala.jdk.CollectionConverters._
 
@@ -15,11 +16,14 @@ import scala.jdk.CollectionConverters._
  * @author Siddhu Warrier
  */
 
-class AuthUserController(implicit val userDao: DBUserDAO) extends JsonController
+class AuthUserController(implicit val userDao: DBUserDAO, implicit val swagger: Swagger) extends JsonController
     with LoginAuthenticationSupport
+    with SwaggerSupport
     with CorsSupport {
+  implicit val applicationDescription: String = "The User Authentication API"
+
   val tokenService = new JWTTokenService(userDao)
-  val logger = LoggerFactory.getLogger(classOf[AuthUserController])
+  val logger: Logger = LoggerFactory.getLogger(classOf[AuthUserController])
 
   options("/*") {
     response.setHeader("Access-Control-Allow-Headers", request.getHeader("Access-Control-Request-Headers"))
@@ -27,7 +31,16 @@ class AuthUserController(implicit val userDao: DBUserDAO) extends JsonController
 
   override protected implicit def jsonFormats: Formats = DefaultFormats
 
-  post("/") {
+  val authDocs: SwaggerSupportSyntax.OperationBuilder =
+    (apiOperation[String]("auth")
+      summary "POST credentials to get JWT Token to use the API"
+      description "This endpoint takes a username and password and returns a JWT Token if valid"
+      parameters (
+        bodyParam[String]("username"),
+        bodyParam[String]("password"),
+        headerParam[String]("Content-Type").allowableValues("application/json")))
+
+  post("/", operation(authDocs)) {
     val logData = Map("endpoint" -> "POST /")
 
     authenticate() match {
