@@ -33,6 +33,7 @@
         <json4s.version>3.6.10</json4s.version>
         <logstash.version>4.3</logstash.version>
         <slf4j.version>1.7.7</slf4j.version>
+        <bucket4j.version>6.0.1</bucket4j.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -201,6 +202,13 @@
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
             <version>${aws-java-sdk.version}</version>
+        </dependency>
+
+        <!-- Rate limiting -->
+        <dependency>
+            <groupId>com.github.vladimir-bukhtoyarov</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>${bucket4j.version}</version>
         </dependency>
     </dependencies>
 
