@@ -55,7 +55,7 @@ class ScalatraBootstrap extends LifeCycle with PrimitiveTypeMode with MetricsBoo
     // TODO restrict CORS allowed origins?
     context.setInitParameter("org.scalatra.cors.allowCredentials", "false")
     context.setInitParameter("org.scalatra.cors.enable", "true")
-    context.setInitParameter("org.scalatra.cors.allowedOrigins", "https://docs.staging.awsapi.siddhuw.info")
+    context.setInitParameter("org.scalatra.cors.allowedOrigins", "*")
 
     context.mount(new AuthUserController, "/auth", "auth")
     context.mount(new VersionsController, "/versions", "versions")
