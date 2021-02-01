@@ -4,6 +4,7 @@ import com.amazonaws.{ AmazonClientException, AmazonServiceException }
 import com.amazonaws.regions.Regions
 import com.google.common.base.CharMatcher
 import com.google.common.net.HttpHeaders._
+import info.siddhuw.controllers.AwsApiSwagger
 import info.siddhuw.controllers.api.BaseAPIController
 import info.siddhuw.models.APISchema._
 import info.siddhuw.models.{ DBUser, EC2Instance }
@@ -23,6 +24,7 @@ import org.mockito.Mockito.when
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatra.swagger.Swagger
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -43,6 +45,7 @@ class AWSEC2ListInstancesControllerSpec extends AnyFeatureSpec
   //mock out dependency that connects to the internet
   implicit val userDao: DBUserDAO = new DBUserDAO
   implicit val mockThrottlingService: ThrottlingService = mock[ThrottlingService]
+  implicit val swagger: Swagger = new AwsApiSwagger
   addServlet(new AWSEC2Controller, "/api/aws/ec2/*")
 
   implicit def jsonFormats: Formats = DefaultFormats

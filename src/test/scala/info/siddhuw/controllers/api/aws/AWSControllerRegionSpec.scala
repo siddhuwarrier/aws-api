@@ -2,6 +2,7 @@ package info.siddhuw.controllers.api.aws
 
 import com.google.common.base.CharMatcher
 import com.google.common.net.HttpHeaders._
+import info.siddhuw.controllers.AwsApiSwagger
 import info.siddhuw.controllers.api.BaseAPIController
 import info.siddhuw.models.APISchema._
 import info.siddhuw.models.daos.DBUserDAO
@@ -20,6 +21,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatra.test.scalatest.ScalatraSuite
 import org.mockito.Matchers.any
 import org.mockito.Mockito
+import org.scalatra.swagger.Swagger
 
 import scala.language.postfixOps
 import scala.concurrent.duration._
@@ -39,6 +41,7 @@ class AWSControllerRegionSpec extends AnyFeatureSpec
   implicit val awsService: AWSService = new AWSService //AWS Service does not currently connect to the internet; so no need to mock
   implicit val userDao: DBUserDAO = new DBUserDAO
   implicit val mockThrottlingService: ThrottlingService = mock[ThrottlingService]
+  implicit val swagger: Swagger = new AwsApiSwagger
   addServlet(new AWSController, "/api/aws/*")
 
   implicit def jsonFormats: Formats = DefaultFormats
