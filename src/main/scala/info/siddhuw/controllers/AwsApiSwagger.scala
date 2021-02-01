@@ -1,10 +1,10 @@
 package info.siddhuw.controllers
 
-import org.scalatra.ScalatraServlet
 import org.scalatra.swagger._
+import org.scalatra.{CorsSupport, ScalatraServlet}
 
 class ResourcesApp(implicit val swagger: Swagger) extends ScalatraServlet
-  with NativeSwaggerBase
+    with NativeSwaggerBase with CorsSupport
 
 object AwsApiInfo extends ApiInfo(
   "The AWS EC2 API Wrapper API",
