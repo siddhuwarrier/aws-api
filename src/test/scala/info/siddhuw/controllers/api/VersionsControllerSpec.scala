@@ -1,6 +1,7 @@
 package info.siddhuw.controllers.api
 
 import com.typesafe.config.ConfigFactory
+import info.siddhuw.controllers.AwsApiSwagger
 import info.siddhuw.services.VersionsService
 import info.siddhuw.utils.JsonScalatraSuite
 import org.apache.commons.httpclient.HttpStatus.SC_OK
@@ -11,6 +12,7 @@ import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{ BeforeAndAfterAll, GivenWhenThen }
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatra.swagger.Swagger
 
 class VersionsControllerSpec extends AnyFeatureSpec
     with JsonScalatraSuite
@@ -19,6 +21,7 @@ class VersionsControllerSpec extends AnyFeatureSpec
     with MockitoSugar
     with Matchers {
   implicit val versionsService = mock[VersionsService]
+  implicit val swagger: Swagger = new AwsApiSwagger
 
   addServlet(new VersionsController, "/versions/*")
 

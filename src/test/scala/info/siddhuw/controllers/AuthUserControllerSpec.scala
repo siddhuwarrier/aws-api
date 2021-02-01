@@ -15,6 +15,7 @@ import org.json4s.{ DefaultFormats, _ }
 import org.scalatest._
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatra.swagger.Swagger
 
 /**
  * @author Siddhu Warrier
@@ -32,6 +33,7 @@ class AuthUserControllerSpec extends AnyFeatureSpec
   val user = DBUser("username", validPwHash, salt)
 
   implicit val userDao = new DBUserDAO
+  implicit val swagger: Swagger = new AwsApiSwagger
   addServlet(new AuthUserController, "/auth/*")
 
   implicit def jsonFormats: Formats = DefaultFormats

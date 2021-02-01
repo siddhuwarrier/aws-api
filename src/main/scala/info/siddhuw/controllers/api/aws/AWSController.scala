@@ -2,11 +2,13 @@ package info.siddhuw.controllers.api.aws
 
 import info.siddhuw.controllers.api.BaseAPIController
 import info.siddhuw.controllers.api.BaseAPIController._
+import info.siddhuw.models.AWSRegion
 import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.{ AWSService, ThrottlingService }
 import net.logstash.logback.marker.Markers._
 import org.scalatra.Unauthorized
-import org.slf4j.LoggerFactory
+import org.scalatra.swagger.{ Swagger, SwaggerSupport, SwaggerSupportSyntax }
+import org.slf4j.{ Logger, LoggerFactory }
 
 import scala.jdk.CollectionConverters._
 
@@ -14,10 +16,22 @@ import scala.jdk.CollectionConverters._
  * @author Siddhu Warrier
  */
 
-class AWSController(implicit val awsService: AWSService, implicit val userDao: DBUserDAO, implicit val throttlingService: ThrottlingService) extends BaseAPIController {
-  val logger = LoggerFactory.getLogger(classOf[AWSController])
+class AWSController(implicit val awsService: AWSService,
+    implicit val userDao: DBUserDAO,
+    implicit val throttlingService: ThrottlingService,
+    implicit val swagger: Swagger) extends BaseAPIController with SwaggerSupport {
+  implicit val applicationDescription: String = "The AWS API"
+  val logger: Logger = LoggerFactory.getLogger(classOf[AWSController])
 
-  get("/regions") {
+  val getRegionsDocs: SwaggerSupportSyntax.OperationBuilder =
+    (apiOperation[AWSRegion]("regions")
+      summary "GET list of available AWS regions"
+      description "This endpoint lists the available AWS regions you can query against."
+      parameter
+      headerParam("Authorization")
+      .description("Set the JWT token obtained by hitting the auth endpoint in the form `Bearer JWTToken`"))
+
+  get("/regions", operation(getRegionsDocs)) {
     val logData = Map("endpoint" -> "GET /regions")
     authenticate() match {
       case Some(_) ⇒
