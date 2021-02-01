@@ -27,12 +27,13 @@ class AWSController(implicit val awsService: AWSService,
   val getRegionsDocs: Operation =
     (apiOperation[AWSRegion]("regions")
       summary "GET list of available AWS regions"
+      position 2
       description "This endpoint lists the available AWS regions you can query against."
       authorizations "Authorization"
       responseMessages (
         ResponseMessage(200, "Successfully retrieved").model[AWSRegion],
-        ResponseMessage(429, "Too many requests. Check the X-RateLimit-Remaining header to figure out how long to wait for.").model[String],
-        ResponseMessage(401, "Invalid JWT token").model[String]))
+        ResponseMessage(429, "Too many requests. Check the X-RateLimit-Remaining header to figure out how long to wait for."),
+        ResponseMessage(401, "Invalid JWT token")))
 
   get("/regions", operation(getRegionsDocs)) {
     val logData = Map("endpoint" -> "GET /regions")

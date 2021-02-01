@@ -34,11 +34,12 @@ class AWSEC2Controller(implicit val awsEc2Service: AWSEC2Service,
     (apiOperation[EC2Instance]("instances")
       summary "GET list of EC2 instances in region"
       description "This endpoint lists the EC2 instances in the region specified as a query param."
+      position 3
       authorizations "Authorization"
       responseMessages (
-        ResponseMessage(HttpStatus.SC_OK, "Successfully retrieved"),
+        ResponseMessage(200, "Successfully retrieved"),
         ResponseMessage(429, "Too many requests. Check the X-RateLimit-Remaining header to figure out how long to wait for."),
-        ResponseMessage(HttpStatus.SC_UNAUTHORIZED, "Invalid JWT token"))
+        ResponseMessage(401, "Invalid JWT token"))
         parameters (
           queryParam("region")
           .required

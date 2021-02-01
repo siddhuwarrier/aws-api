@@ -22,6 +22,7 @@ class VersionsController(implicit val versionsService: VersionsService, implicit
 
   val versionsApiDocs: SwaggerSupportSyntax.OperationBuilder =
     (apiOperation[Map[String, String]]("versions")
+      position 1
       summary "Get microservice version"
       description "This endpoint returns the last git commit that was deployed")
 
