@@ -1,20 +1,16 @@
 package info.siddhuw.controllers.api.aws.ec2
 
 import com.amazonaws.{ AmazonClientException, AmazonServiceException }
-import info.siddhuw.auth.APIAuthenticationSupport
-import info.siddhuw.controllers.JsonController
 import info.siddhuw.controllers.api.BaseAPIController
 import info.siddhuw.controllers.api.aws.ec2.AWSEC2Controller._
 import info.siddhuw.models.EC2Instance
 import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.{ AWSEC2Service, ThrottlingService }
 import net.logstash.logback.marker.Markers._
-import org.apache.http.HttpStatus
-import org.json4s.{ DefaultFormats, Formats }
-import org.scalatra._
-import org.slf4j.{ Logger, LoggerFactory }
 import org.apache.http.HttpStatus._
-import org.scalatra.swagger.{ ResponseMessage, Swagger, SwaggerSupport, SwaggerSupportSyntax }
+import org.scalatra._
+import org.scalatra.swagger._
+import org.slf4j.{ Logger, LoggerFactory }
 
 import scala.jdk.CollectionConverters._
 
@@ -42,6 +38,7 @@ class AWSEC2Controller(implicit val awsEc2Service: AWSEC2Service,
         ResponseMessage(401, "Invalid JWT token"))
         parameters (
           queryParam("region")
+          .dataType(DataType("string"))
           .required
           .description("Specify a valid AWS region. You can get the list of valid AWS regions by querying the /api/aws/regions endpoint.")))
 
