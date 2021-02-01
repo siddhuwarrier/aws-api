@@ -9,11 +9,12 @@ import info.siddhuw.models.EC2Instance
 import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.{ AWSEC2Service, ThrottlingService }
 import net.logstash.logback.marker.Markers._
+import org.apache.http.HttpStatus
 import org.json4s.{ DefaultFormats, Formats }
 import org.scalatra._
 import org.slf4j.{ Logger, LoggerFactory }
 import org.apache.http.HttpStatus._
-import org.scalatra.swagger.{ Swagger, SwaggerSupport, SwaggerSupportSyntax }
+import org.scalatra.swagger.{ ResponseMessage, Swagger, SwaggerSupport, SwaggerSupportSyntax }
 
 import scala.jdk.CollectionConverters._
 
@@ -33,12 +34,15 @@ class AWSEC2Controller(implicit val awsEc2Service: AWSEC2Service,
     (apiOperation[EC2Instance]("instances")
       summary "GET list of EC2 instances in region"
       description "This endpoint lists the EC2 instances in the region specified as a query param."
-      parameters (
-        queryParam("region")
-        .required
-        .description("Specify a valid AWS region. You can get the list of valid AWS regions by querying the /api/aws/regions endpoint."),
-        headerParam("Authorization")
-        .description("Set the JWT token obtained by hitting the auth endpoint in the form `Bearer JWTToken`")))
+      authorizations "Authorization"
+      responseMessages (
+        ResponseMessage(HttpStatus.SC_OK, "Successfully retrieved"),
+        ResponseMessage(429, "Too many requests. Check the X-RateLimit-Remaining header to figure out how long to wait for."),
+        ResponseMessage(HttpStatus.SC_UNAUTHORIZED, "Invalid JWT token"))
+        parameters (
+          queryParam("region")
+          .required
+          .description("Specify a valid AWS region. You can get the list of valid AWS regions by querying the /api/aws/regions endpoint.")))
 
   get("/instances", operation(getInstancesDocs)) {
     val logData = Map("endpoint" -> "GET /instances")

@@ -6,8 +6,9 @@ import info.siddhuw.models.AWSRegion
 import info.siddhuw.models.daos.DBUserDAO
 import info.siddhuw.services.{ AWSService, ThrottlingService }
 import net.logstash.logback.marker.Markers._
+import org.apache.http.HttpStatus
 import org.scalatra.Unauthorized
-import org.scalatra.swagger.{ Swagger, SwaggerSupport, SwaggerSupportSyntax }
+import org.scalatra.swagger.{ Operation, ResponseMessage, Swagger, SwaggerSupport, SwaggerSupportSyntax }
 import org.slf4j.{ Logger, LoggerFactory }
 
 import scala.jdk.CollectionConverters._
@@ -23,13 +24,15 @@ class AWSController(implicit val awsService: AWSService,
   implicit val applicationDescription: String = "The AWS API"
   val logger: Logger = LoggerFactory.getLogger(classOf[AWSController])
 
-  val getRegionsDocs: SwaggerSupportSyntax.OperationBuilder =
+  val getRegionsDocs: Operation =
     (apiOperation[AWSRegion]("regions")
       summary "GET list of available AWS regions"
       description "This endpoint lists the available AWS regions you can query against."
-      parameter
-      headerParam("Authorization")
-      .description("Set the JWT token obtained by hitting the auth endpoint in the form `Bearer JWTToken`"))
+      authorizations "Authorization"
+      responseMessages (
+        ResponseMessage(200, "Successfully retrieved").model[AWSRegion],
+        ResponseMessage(429, "Too many requests. Check the X-RateLimit-Remaining header to figure out how long to wait for.").model[String],
+        ResponseMessage(401, "Invalid JWT token").model[String]))
 
   get("/regions", operation(getRegionsDocs)) {
     val logData = Map("endpoint" -> "GET /regions")
