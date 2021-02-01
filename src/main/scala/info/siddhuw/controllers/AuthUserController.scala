@@ -35,6 +35,7 @@ class AuthUserController(implicit val userDao: DBUserDAO, implicit val swagger: 
   val authDocs: SwaggerSupportSyntax.OperationBuilder =
     (apiOperation[String]("auth")
       summary "POST credentials to get JWT Token to use the API"
+      position 0
       description "This endpoint takes a username and password and returns a JWT Token if valid"
       parameters (
         bodyParam[InputUser]("user-info"),
